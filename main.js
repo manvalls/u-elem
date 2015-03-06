@@ -11,7 +11,7 @@ elem = module.exports = function(jsonml,g){
   if(jsonml[0] instanceof Node) ret = jsonml[0];
   else ret = document.createElement(jsonml[0]);
   
-  for(i = 0;i < jsonml.length;i++){
+  for(i = 1;i < jsonml.length;i++){
     if(jsonml[i] instanceof Node) ret.appendChild(jsonml[i]);
     else switch(jsonml[i].constructor){
       
