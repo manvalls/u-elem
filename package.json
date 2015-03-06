@@ -1,12 +1,11 @@
 {
   "name": "u-elem",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Get DOM Element from JsonML Array",
   "main": "main.js",
   "dependencies": {
     "u-proto": ""
   },
-  
   "repository": {
     "type": "git",
     "url": "git://github.com/manvalls/u-elem.git"
