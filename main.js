@@ -23,8 +23,8 @@ elem = module.exports = function(jsonml,g){
         ret[apply](jsonml[i]);
         break;
       
-      case String:
-        ret.appendChild(document.createTextNode(jsonml[i]));
+      default:
+        ret.appendChild(document.createTextNode(jsonml[i].toString()));
         break;
         
     }
