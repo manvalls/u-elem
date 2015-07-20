@@ -1,6 +1,6 @@
 {
   "name": "u-elem",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Get DOM Element from JsonML Array",
   "main": "main.js",
   "dependencies": {
