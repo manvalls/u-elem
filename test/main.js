@@ -37,6 +37,7 @@ t('on',function(){
 
   s.click();
   assert.strictEqual(n,2);
+  assert.strictEqual(s.tagName,'SPAN');
 });
 
 t('destroy',function*(){
