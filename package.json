@@ -1,6 +1,6 @@
 {
   "name": "u-elem",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "An extensible JsonML parser",
   "main": "main.js",
   "dependencies": {
