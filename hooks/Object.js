@@ -5,7 +5,7 @@ var define = require('u-proto/define'),
     hook = require('../hook.js'),
     collection = Symbol();
 
-Object.prototype[define](hook,function h(parent){
+Object.prototype[define](hook,function(parent){
 
   if(!parent) parent = ['div'][hook]();
 
