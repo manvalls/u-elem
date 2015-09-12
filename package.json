@@ -1,10 +1,22 @@
 {
   "name": "u-elem",
   "version": "1.0.0",
-  "description": "Get DOM Element from JsonML Array",
+  "description": "An extensible JsonML parser",
   "main": "main.js",
   "dependencies": {
-    "u-proto": ""
+    "u-proto": "",
+    "detacher": ""
+  },
+  "devDependencies": {
+    "coveralls": "^2",
+    "istanbul": "",
+    "jsdom": "^6.3.0",
+    "u-test": "",
+    "y-setter": "",
+    "y-timers": ""
+  },
+  "scripts": {
+    "test": "bash test.sh"
   },
   "repository": {
     "type": "git",
