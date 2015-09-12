@@ -1,7 +1,7 @@
 {
   "name": "u-elem",
   "version": "2.0.2",
-  "description": "An extensible JsonML parser",
+  "description": "Configure your own JsonML dialect",
   "main": "main.js",
   "dependencies": {
     "u-proto": "",

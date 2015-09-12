@@ -24,20 +24,20 @@ t('Element creation and appending',function(){
     ]
   );
 
-  assert.strictEqual(document.body.innerHTML,'Hello world!<span style="color: green;">Hi again!</span>');
+  assert.strictEqual(document.body.innerHTML,'Hello world!<div style="color: green;">Hi again!</div>');
   assert.strictEqual(document.body.style.color,'black');
 });
 
 t('on',function(){
   var n = 0,
-      s = x([
+      d = x([
         on('click',() => n++),
         on('click',() => n++,true)
       ]);
 
-  s.click();
+  d.click();
   assert.strictEqual(n,2);
-  assert.strictEqual(s.tagName,'SPAN');
+  assert.strictEqual(d.tagName,'DIV');
 });
 
 t('destroy',function*(){

@@ -14,7 +14,7 @@ function on(){
 }
 
 function listen(elem){
-  elem = elem || ['span'][hook]();
+  elem = elem || ['div'][hook]();
   elem.addEventListener(this[event], this[listener], this[useCapture]);
   return elem;
 }

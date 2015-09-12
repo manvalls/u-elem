@@ -7,7 +7,7 @@ var define = require('u-proto/define'),
 
 Object.prototype[define](hook,function h(parent){
 
-  if(!parent) parent = ['span'][hook]();
+  if(!parent) parent = ['div'][hook]();
 
   if(!parent[collection]){
     parent[collection] = new Collection();
