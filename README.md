@@ -58,7 +58,28 @@ The `Array` hook would run the hook of `document.body` without arguments, which 
 <body>foobar</body>
 ```
 
-You may want to take a look at [on.js](on.js) to see how hooks may be used to do interesting things, such as calling `addEventListener` in the middle of the parsing process. One thing remains: the cleanup. If your hook needs to do some operations when the element is to be discarded, it should listen for the `destruction` event. *Elem* ships with a utility method to dispatch `destruction` events at an element and all its children, use it when you're done with a node, like this:
+You may want to take a look at [on.js](on.js) to see how hooks may be used to do interesting things, such as calling `addEventListener` in the middle of the parsing process. Another cool hook is `when`:
+
+```javascript
+var x = require('u-elem'),
+    when = require('u-elem/when'),
+    whenNot = require('u-elem/whenNot'),
+    H = require('y-setter').Hybrid,
+
+    h = new H(),
+    d = x('div',
+      when(h,['span','Yes!']),
+      whenNot(h,['span','No!'])
+    );
+
+h.value = true;
+console.log(d.innerHTML); // <span>Yes!</span>
+
+h.value = false;
+console.log(d.innerHTML); // <span>No!</span>
+```
+
+One thing remains: the cleanup. If your hook needs to do some operations when the element is to be discarded, it should listen for the `destruction` event. *Elem* ships with a utility method to dispatch `destruction` events at an element and all its children, use it when you're done with a node, like this:
 
 ```javascript
 var x = require('u-elem'),
