@@ -1,13 +1,25 @@
 var define = require('u-proto/define'),
     apply = require('u-proto/apply'),
     Collection = require('detacher/collection'),
+    Getter = require('y-setter').Getter,
 
     hook = require('../hook.js'),
-    collection = Symbol();
+    collection = Symbol(),
+    connection = Symbol();
 
 Object.prototype[define](hook,function(parent){
+  var txt;
 
   if(!parent) parent = ['div'][hook]();
+
+  if(Getter.is(this)){
+    txt = document.createTextNode('');
+    txt[connection] = this.connect(txt,'textContent');
+    txt.addEventListener('destruction',onTNDestruction,false);
+
+    parent.appendChild(txt);
+    return parent;
+  }
 
   if(!parent[collection]){
     parent[collection] = new Collection();
@@ -21,4 +33,8 @@ Object.prototype[define](hook,function(parent){
 
 function onDestruction(){
   this[collection].detach();
+}
+
+function onTNDestruction(){
+  this[connection].detach();
 }

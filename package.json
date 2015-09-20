@@ -5,14 +5,14 @@
   "main": "main.js",
   "dependencies": {
     "u-proto": "",
-    "detacher": ""
+    "detacher": "",
+    "y-setter": ""
   },
   "devDependencies": {
     "coveralls": "^2",
     "istanbul": "",
     "jsdom": "^6.3.0",
     "u-test": "",
-    "y-setter": "",
     "y-timers": ""
   },
   "scripts": {

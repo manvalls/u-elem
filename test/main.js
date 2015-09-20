@@ -30,6 +30,22 @@ t('Element creation and appending',function(){
   assert.strictEqual(document.body.style.color,'black');
 });
 
+t('Getter hook',function(){
+  var setter = new Setter(''),
+      getter = setter.getter,
+      s;
+
+  s = x(['div',['span',getter]]);
+  assert.strictEqual(s.innerHTML,'<span></span>');
+
+  setter.value = 'foo';
+  assert.strictEqual(s.innerHTML,'<span>foo</span>');
+
+  s[destroy]();
+  setter.value = 'bar';
+  assert.strictEqual(s.innerHTML,'<span>foo</span>');
+});
+
 t('on',function(){
   var n = 0,
       d = x([
