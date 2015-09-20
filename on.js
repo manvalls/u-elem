@@ -1,13 +1,11 @@
 var hook = require('./hook.js'),
-    event = Symbol(),
-    listener = Symbol(),
-    useCapture = Symbol();
+    listeners = require('./listeners.js');
 
 function on(){
   return {
-    [event]: arguments[0],
-    [listener]: arguments[1],
-    [useCapture]: arguments[2] ? true : false,
+    event: arguments[0],
+    listener: arguments[1],
+    useCapture: arguments[2] ? true : false,
 
     [hook]: listen
   };
@@ -15,7 +13,9 @@ function on(){
 
 function listen(elem){
   elem = elem || ['div'][hook]();
-  elem.addEventListener(this[event], this[listener], this[useCapture]);
+  elem.addEventListener(this.event, this.listener, this.useCapture);
+  elem[listeners].push([this.event, this.listener, this.useCapture]);
+
   return elem;
 }
 

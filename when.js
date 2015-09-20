@@ -1,15 +1,11 @@
-var Collection = require('detacher/collection'),
-    hook = require('./hook.js'),
+var hook = require('./hook.js'),
     destroy = require('./destroy.js'),
-
-    getter = Symbol(),
-    elem = Symbol(),
-    col = Symbol();
+    collection = require('./collection.js');
 
 function when(){
   return {
-    [getter]: arguments[0],
-    [elem]: arguments[1],
+    getter: arguments[0],
+    elem: arguments[1],
 
     [hook]: hookFn
   };
@@ -20,14 +16,8 @@ function hookFn(parent){
 
   parent = parent || ['div'][hook]();
   parent.appendChild(ref);
-
-  if(!parent[col]){
-    parent[col] = new Collection();
-    parent.addEventListener('destruction',onDestruction,false);
-  }
-
-  parent[col].add(
-    this[getter].watch(watchFn,this[elem],parent,ref,{})
+  parent[collection].add(
+    this.getter.watch(watchFn,this.elem,parent,ref,{})
   );
 
   return parent;
@@ -47,10 +37,6 @@ function watchFn(v,ov,d,elem,parent,ref,ctx){
     parent.insertBefore(ctx.elem,ref);
   }
 
-}
-
-function onDestruction(){
-  this[col].detach();
 }
 
 /*/ exports /*/

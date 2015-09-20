@@ -13,7 +13,8 @@
     "istanbul": "",
     "jsdom": "^6.3.0",
     "u-test": "",
-    "y-timers": ""
+    "y-timers": "",
+    "rul": ""
   },
   "scripts": {
     "test": "bash test.sh"

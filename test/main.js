@@ -7,6 +7,8 @@ var x = require('../main.js'),
     destroy = require('../destroy.js'),
     Setter = require('y-setter'),
     wait = require('y-timers/wait'),
+    Rul = require('rul'),
+    forEach = require('../forEach.js'),
 
     t = require('u-test'),
     assert = require('assert');
@@ -82,6 +84,10 @@ t('on',function(){
   d.click();
   assert.strictEqual(n,2);
   assert.strictEqual(d.tagName,'DIV');
+
+  d[destroy]();
+  d.click();
+  assert.strictEqual(n,2);
 });
 
 t('when',function(){
@@ -145,6 +151,36 @@ t('whenNot',function(){
   s1.value = !s1.value;
   s2.value = !s2.value;
   assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+
+});
+
+t('forEach',function(){
+  var rul = new Rul(),
+      d = x('div','foobar');
+
+  rul.append([1,2,3]);
+  x(d,forEach(rul,n => ['span',n + '']));
+
+  assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>2</span><span>3</span>');
+
+  rul.remove(1);
+  assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>3</span>');
+
+  d = x(forEach(rul,n => ['span',n + '']));
+  assert.strictEqual(d.tagName,'DIV');
+  
+  rul.add(2,1);
+  assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
+
+  rul.remove(0,2);
+  assert.strictEqual(d.innerHTML,'<span>3</span>');
+
+  rul.append([4,5,6]);
+  rul.swap(2,1);
+  assert.strictEqual(d.innerHTML,'<span>3</span><span>5</span><span>4</span><span>6</span>');
+
+  rul.move(0,3);
+  assert.strictEqual(d.innerHTML,'<span>5</span><span>4</span><span>6</span><span>3</span>');
 
 });
 
