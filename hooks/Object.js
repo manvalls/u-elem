@@ -8,7 +8,16 @@ var define = require('u-proto/define'),
     connection = Symbol();
 
 Object.prototype[define](hook,function(parent){
-  var txt;
+  var txt,elem,ctrl;
+
+  if(typeof this.controller == 'function' && typeof this.view == 'function'){
+    ctrl = new this.controller(this);
+    elem = this.view(ctrl,this)[hook]();
+
+    if(!parent) return elem;
+    parent.appendChild(elem);
+    return;
+  }
 
   if(!parent) parent = ['div'][hook]();
 

@@ -46,6 +46,32 @@ t('Getter hook',function(){
   assert.strictEqual(s.innerHTML,'<span>foo</span>');
 });
 
+t('MVC',function(){
+  var d = x({
+    view: require('./main/view'),
+    controller: require('./main/controller'),
+    foo: 'bar'
+  });
+
+  assert.strictEqual(d.innerHTML,'bar');
+
+  d = x({
+    view: require('./main/view'),
+    controller: require('./main/controller'),
+    foo: 'foo'
+  });
+
+  assert.strictEqual(d.innerHTML,'foo');
+
+  d = x('div',{
+    view: require('./main/view'),
+    controller: require('./main/controller'),
+    foo: 'foo'
+  });
+
+  assert.strictEqual(d.innerHTML,'<div>foo</div>');
+});
+
 t('on',function(){
   var n = 0,
       d = x([
