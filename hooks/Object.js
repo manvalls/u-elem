@@ -1,38 +1,43 @@
 var define = require('u-proto/define'),
     apply = require('u-proto/apply'),
-    Collection = require('detacher/collection'),
+    collection = require('../collection'),
     Getter = require('y-setter').Getter,
+    Resolver = require('y-resolver'),
 
-    hook = require('../hook.js'),
-    collection = Symbol(),
-    connection = Symbol();
+    hook = require('../hook.js');
 
-Object.prototype[define](hook,function(parent){
+Object.prototype[define](hook,function(parent,sibling){
   var txt,elem,ctrl;
 
   if(typeof this.controller == 'function' && typeof this.view == 'function'){
     ctrl = new this.controller(this);
     elem = this.view(ctrl,this)[hook]();
 
-    if(!parent) return elem;
-    parent.appendChild(elem);
-    return;
+    if(!parent) parent = elem;
+    else if(sibling) parent.insertBefore(elem,sibling);
+    else parent.appendChild(elem);
+
+    return parent;
   }
 
   if(!parent) parent = ['div'][hook]();
 
-  if(Getter.is(this)){
-    txt = document.createTextNode('');
-    txt[connection] = this.connect(txt,'textContent');
-    txt.addEventListener('destruction',onTNDestruction,false);
+  if(this.view && this.controller){
 
-    parent.appendChild(txt);
+    if(!sibling){
+      sibling = document.createTextNode('');
+      parent.appendChild(sibling);
+    }
+
+    Resolver.all([this.controller,this.view]).listen(listener,[parent,this,sibling]);
     return parent;
   }
 
-  if(!parent[collection]){
-    parent[collection] = new Collection();
-    parent.addEventListener('destruction',onDestruction,false);
+  if(Getter.is(this)){
+    txt = document.createTextNode('');
+    txt[collection].add(this.connect(txt,'textContent'));
+    parent.appendChild(txt);
+    return parent;
   }
 
   parent[apply](this,parent[collection]);
@@ -40,10 +45,8 @@ Object.prototype[define](hook,function(parent){
 
 },{writable: true});
 
-function onDestruction(){
-  this[collection].detach();
-}
-
-function onTNDestruction(){
-  this[connection].detach();
+function listener(parent,that,sibling){
+  that.controller = this.value[0];
+  that.view = this.value[1];
+  that[hook](parent,sibling);
 }

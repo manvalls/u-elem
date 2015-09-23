@@ -7,6 +7,7 @@ var x = require('../main.js'),
     destroy = require('../destroy.js'),
     Setter = require('y-setter'),
     wait = require('y-timers/wait'),
+    tick = require('y-timers/tick'),
     Rul = require('rul'),
     forEach = require('../forEach.js'),
 
@@ -49,29 +50,63 @@ t('Getter hook',function(){
 });
 
 t('MVC',function(){
-  var d = x({
-    view: require('./main/view'),
-    controller: require('./main/controller'),
-    foo: 'bar'
+
+  t('Non-yieldeds',function(){
+    var d = x({
+      view: require('./main/view'),
+      controller: require('./main/controller'),
+      foo: 'bar'
+    });
+
+    assert.strictEqual(d.innerHTML,'bar');
+
+    d = x({
+      view: require('./main/view'),
+      controller: require('./main/controller'),
+      foo: 'foo'
+    });
+
+    assert.strictEqual(d.innerHTML,'foo');
+
+    d = x('div',{
+      view: require('./main/view'),
+      controller: require('./main/controller'),
+      foo: 'foo'
+    });
+
+    assert.strictEqual(d.innerHTML,'<div>foo</div>');
   });
 
-  assert.strictEqual(d.innerHTML,'bar');
+  t('Yieldeds',function*(){
+    var d = x({
+      view: tick(require('./main/view')),
+      controller: wait(10,require('./main/controller')),
+      foo: 'bar'
+    },'foo');
 
-  d = x({
-    view: require('./main/view'),
-    controller: require('./main/controller'),
-    foo: 'foo'
+    yield wait(20);
+    assert.strictEqual(d.innerHTML,'<div>bar</div>foo');
+
+    d = x({
+      view: tick(require('./main/view')),
+      controller: require('./main/controller'),
+      foo: 'foo'
+    });
+
+    yield tick();
+    yield tick();
+    assert.strictEqual(d.innerHTML,'<div>foo</div>');
+
+    d = x('span','foo',{
+      view: require('./main/view'),
+      controller: tick(Promise.accept(require('./main/controller'))),
+      foo: 'foo'
+    },'bar');
+
+    yield wait(15);
+    assert.strictEqual(d.innerHTML,'foo<div>foo</div>bar');
   });
 
-  assert.strictEqual(d.innerHTML,'foo');
-
-  d = x('div',{
-    view: require('./main/view'),
-    controller: require('./main/controller'),
-    foo: 'foo'
-  });
-
-  assert.strictEqual(d.innerHTML,'<div>foo</div>');
 });
 
 t('on',function(){
@@ -168,7 +203,7 @@ t('forEach',function(){
 
   d = x(forEach(rul,n => ['span',n + '']));
   assert.strictEqual(d.tagName,'DIV');
-  
+
   rul.add(2,1);
   assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
 

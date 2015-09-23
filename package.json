@@ -6,7 +6,8 @@
   "dependencies": {
     "u-proto": "",
     "detacher": "",
-    "y-setter": ""
+    "y-setter": "",
+    "y-resolver": ""
   },
   "devDependencies": {
     "coveralls": "^2",
