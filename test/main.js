@@ -114,8 +114,10 @@ t('MVC',function(){
 
 });
 
-t('on',function(){
-  var n = 0,
+t('on',function*(){
+  var setter = new Setter('red'),
+      getter = setter.getter,
+      n = 0;
       d = x([
         on('click',() => void n++),
         on('click',() => void n++,true)
@@ -141,6 +143,24 @@ t('on',function(){
   assert.strictEqual(d.innerHTML,'<div>foobar</div>');
   d.click();
   assert.strictEqual(d.innerHTML,'<div>foobar</div><div>foobar</div>');
+
+  d = x([
+    on(getter,(v) => ['span',v]),
+    on(wait(0),{style: {color: 'black'}})
+  ]);
+
+  assert.strictEqual(d.innerHTML,'<span>red</span>');
+  setter.value = 'brown';
+  assert.strictEqual(d.innerHTML,'<span>red</span><span>brown</span>');
+
+  yield wait(100);
+  assert.strictEqual(d.style.color,'black');
+  setter.value = 'black';
+  assert.strictEqual(d.innerHTML,'<span>red</span><span>brown</span><span>black</span>');
+
+  d[destroy]();
+  setter.value = 'red';
+  assert.strictEqual(d.innerHTML,'<span>red</span><span>brown</span><span>black</span>');
 });
 
 t('Function hook',function*(){

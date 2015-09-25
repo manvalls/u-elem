@@ -7,14 +7,18 @@ var define = require('u-proto/define'),
 
     hook = require('../hook.js');
 
-Object.prototype[define](hook,function(parent,sibling){
+Object.prototype[define](hook,function(parent){
+  return hookFn(this,parent);
+},{writable: true});
+
+function hookFn(that,parent,sibling){
   var txt,elem,ctrl,col;
 
-  if(typeof this.controller == 'function' && typeof this.view == 'function'){
+  if(typeof that.controller == 'function' && typeof that.view == 'function'){
     col = new Collection();
-    ctrl = new this.controller(this,col);
-    
-    elem = this.view(ctrl,this)[hook]();
+    ctrl = new that.controller(that,col);
+
+    elem = that.view(ctrl,that)[hook]();
     elem[collection].add(col);
 
     if(!parent) parent = elem;
@@ -26,31 +30,31 @@ Object.prototype[define](hook,function(parent,sibling){
 
   if(!parent) parent = document.createElement('div');
 
-  if(this.view && this.controller){
+  if(that.view && that.controller){
 
     if(!sibling){
       sibling = document.createTextNode('');
       parent.appendChild(sibling);
     }
 
-    Resolver.all([this.controller,this.view]).listen(listener,[parent,this,sibling]);
+    Resolver.all([that.controller,that.view]).listen(listener,[parent,that,sibling]);
     return parent;
   }
 
-  if(Getter.is(this)){
+  if(Getter.is(that)){
     txt = document.createTextNode('');
-    txt[collection].add(this.connect(txt,'textContent'));
+    txt[collection].add(that.connect(txt,'textContent'));
     parent.appendChild(txt);
     return parent;
   }
 
-  parent[apply](this,parent[collection]);
+  parent[apply](that,parent[collection]);
   return parent;
 
-},{writable: true});
+}
 
 function listener(parent,that,sibling){
   that.controller = this.value[0];
   that.view = this.value[1];
-  that[hook](parent,sibling);
+  hookFn(that,parent,sibling);
 }

@@ -2,13 +2,13 @@ var define = require('u-proto/define'),
     walk = require('y-walk'),
     hook = require('../hook.js');
 
-Function.prototype[define](hook,function(parent){
+Function.prototype[define](hook,function(parent,args){
   var ref = document.createTextNode('');
 
   parent = parent || document.createElement('div');
   parent.appendChild(ref);
-  walk(this,[],parent).listen(listener,[parent,ref]);
 
+  walk(this,args || [],parent).listen(listener,[parent,ref]);
   return parent;
 });
 
