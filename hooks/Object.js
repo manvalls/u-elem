@@ -24,7 +24,7 @@ Object.prototype[define](hook,function(parent,sibling){
     return parent;
   }
 
-  if(!parent) parent = ['div'][hook]();
+  if(!parent) parent = document.createElement('div');
 
   if(this.view && this.controller){
 

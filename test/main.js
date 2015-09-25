@@ -22,7 +22,7 @@ t('Element creation and appending',function(){
   x(null,'body',
     {style: {color: 'black'}},
     'Hello world!',
-    null,Object.create(null),[],
+    null,Object.create(null),
     [
       {style: {color: 'green'}},
       'Hi again!'
@@ -31,6 +31,7 @@ t('Element creation and appending',function(){
 
   assert.strictEqual(document.body.innerHTML,'Hello world!<div style="color: green;">Hi again!</div>');
   assert.strictEqual(document.body.style.color,'black');
+  assert.strictEqual(x(['div',[]]).innerHTML,'<div></div>');
 });
 
 t('Getter hook',function(){
@@ -116,8 +117,8 @@ t('MVC',function(){
 t('on',function(){
   var n = 0,
       d = x([
-        on('click',() => n++),
-        on('click',() => n++,true)
+        on('click',() => void n++),
+        on('click',() => void n++,true)
       ]);
 
   d.click();
@@ -127,6 +128,34 @@ t('on',function(){
   d[destroy]();
   d.click();
   assert.strictEqual(n,2);
+
+  d = x([
+    on('click',() => ['div','foo','bar']),
+    on('click',{style: {color: 'black'}})
+  ]);
+
+  assert.strictEqual(d.innerHTML,'');
+  assert(!d.style.color);
+  d.click();
+  assert.strictEqual(d.style.color,'black');
+  assert.strictEqual(d.innerHTML,'<div>foobar</div>');
+  d.click();
+  assert.strictEqual(d.innerHTML,'<div>foobar</div><div>foobar</div>');
+});
+
+t('Function hook',function*(){
+  var d = x(['div',function*(){
+    e = this;
+    yield wait(0);
+    return ['span','foo'];
+  }]),e;
+
+  assert.strictEqual(e,d);
+  assert.strictEqual(d.innerHTML,'');
+  yield wait(100);
+  assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+  assert.strictEqual(x(()=>null).tagName,'DIV');
 });
 
 t('when',function(){

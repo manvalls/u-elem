@@ -12,9 +12,11 @@ function on(){
 }
 
 function listen(elem){
-  elem = elem || ['div'][hook]();
-  elem.addEventListener(this.event, this.listener, this.useCapture);
-  elem[listeners].push([this.event, this.listener, this.useCapture]);
+  var listener = () => this.listener[hook](elem);
+
+  elem = elem || document.createElement('div');
+  elem.addEventListener(this.event, listener, this.useCapture);
+  elem[listeners].push([this.event, listener, this.useCapture]);
 
   return elem;
 }

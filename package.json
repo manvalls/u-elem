@@ -7,7 +7,8 @@
     "u-proto": "",
     "detacher": "",
     "y-setter": "",
-    "y-resolver": ""
+    "y-resolver": "",
+    "y-walk": ""
   },
   "devDependencies": {
     "coveralls": "^2",

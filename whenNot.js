@@ -14,7 +14,7 @@ function whenNot(){
 function hookFn(parent){
   var ref = document.createTextNode('');
 
-  parent = parent || ['div'][hook]();
+  parent = parent || document.createElement('div');
   parent.appendChild(ref);
   parent[collection].add(
     this.getter.watch(watchFn,this.elem,parent,ref,{})

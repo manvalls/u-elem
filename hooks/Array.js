@@ -6,7 +6,7 @@ Array.prototype[define](hook,function h(parent){
 
   if(parent){
     c = h.call(this);
-    if(c) parent.appendChild(c);
+    parent.appendChild(c);
     return;
   }
 
@@ -15,7 +15,7 @@ Array.prototype[define](hook,function h(parent){
     if(this[i] != null && this[i][hook]) ret = this[i][hook]();
   }
 
-  if(!ret) return;
+  if(!ret) return document.createElement('div');
 
   for(;i < this.length;i++){
     if(this[i] == null) e = '';

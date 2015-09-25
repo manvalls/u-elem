@@ -13,7 +13,7 @@ function forEach(rul,func,thisArg){
 function hookFn(parent){
   var ctx = {};
 
-  parent = parent || ['div'][hook]();
+  parent = parent || document.createElement('div');
 
   ctx.parent = parent;
   ctx.func = this.func;
