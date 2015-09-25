@@ -1,17 +1,21 @@
 var define = require('u-proto/define'),
     apply = require('u-proto/apply'),
     collection = require('../collection'),
+    Collection = require('detacher/collection'),
     Getter = require('y-setter').Getter,
     Resolver = require('y-resolver'),
 
     hook = require('../hook.js');
 
 Object.prototype[define](hook,function(parent,sibling){
-  var txt,elem,ctrl;
+  var txt,elem,ctrl,col;
 
   if(typeof this.controller == 'function' && typeof this.view == 'function'){
-    ctrl = new this.controller(this);
+    col = new Collection();
+    ctrl = new this.controller(this,col);
+    
     elem = this.view(ctrl,this)[hook]();
+    elem[collection].add(col);
 
     if(!parent) parent = elem;
     else if(sibling) parent.insertBefore(elem,sibling);

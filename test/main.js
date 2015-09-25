@@ -56,7 +56,7 @@ t('MVC',function(){
       view: require('./main/view'),
       controller: require('./main/controller'),
       foo: 'bar'
-    });
+    }),obj;
 
     assert.strictEqual(d.innerHTML,'bar');
 
@@ -68,13 +68,17 @@ t('MVC',function(){
 
     assert.strictEqual(d.innerHTML,'foo');
 
-    d = x('div',{
+    d = x('div',obj = {
       view: require('./main/view'),
       controller: require('./main/controller'),
       foo: 'foo'
     });
 
     assert.strictEqual(d.innerHTML,'<div>foo</div>');
+
+    assert(!obj.done);
+    d[destroy]();
+    assert(obj.done);
   });
 
   t('Yieldeds',function*(){
