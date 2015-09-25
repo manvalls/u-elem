@@ -2,10 +2,14 @@ Object.setPrototypeOf(global,require('jsdom').jsdom().defaultView);
 
 var x = require('../main.js'),
     on = require('../on.js'),
+    onNot = require('../onNot.js'),
+    once = require('../once.js'),
+    onceNot = require('../onceNot.js'),
     when = require('../when.js'),
     whenNot = require('../whenNot.js'),
     destroy = require('../destroy.js'),
     Setter = require('y-setter'),
+    Resolver = require('y-resolver'),
     wait = require('y-timers/wait'),
     tick = require('y-timers/tick'),
     Rul = require('rul'),
@@ -117,7 +121,7 @@ t('MVC',function(){
 t('on',function*(){
   var setter = new Setter('red'),
       getter = setter.getter,
-      n = 0;
+      n = 0,
       d = x([
         on('click',() => void n++),
         on('click',() => void n++,true)
@@ -146,7 +150,8 @@ t('on',function*(){
 
   d = x([
     on(getter,(v) => ['span',v]),
-    on(wait(0),{style: {color: 'black'}})
+    on(wait(0),{style: {color: 'black'}}),
+    on(Resolver.reject(),(v) => ['span',v])
   ]);
 
   assert.strictEqual(d.innerHTML,'<span>red</span>');
@@ -156,11 +161,154 @@ t('on',function*(){
   yield wait(100);
   assert.strictEqual(d.style.color,'black');
   setter.value = 'black';
+  setter.value = false;
   assert.strictEqual(d.innerHTML,'<span>red</span><span>brown</span><span>black</span>');
 
   d[destroy]();
   setter.value = 'red';
   assert.strictEqual(d.innerHTML,'<span>red</span><span>brown</span><span>black</span>');
+});
+
+t('once',function*(){
+  var setter = new Setter(),
+      getter = setter.getter,
+      n = 0,
+      d = x([
+        once('click',() => void n++),
+        once('click',() => void n++,true)
+      ]);
+
+  d.click();
+  d.click();
+  d.click();
+  assert.strictEqual(n,2);
+  assert.strictEqual(d.tagName,'DIV');
+
+  d[destroy]();
+  d.click();
+  assert.strictEqual(n,2);
+
+  d = x([
+    once('click',() => ['div','foo','bar']),
+    once('click',{style: {color: 'black'}})
+  ]);
+
+  assert.strictEqual(d.innerHTML,'');
+  assert(!d.style.color);
+  d.click();
+  assert.strictEqual(d.style.color,'black');
+  assert.strictEqual(d.innerHTML,'<div>foobar</div>');
+  d.click();
+  assert.strictEqual(d.innerHTML,'<div>foobar</div>');
+
+  d = x([
+    once(getter,(v) => ['span',v]),
+    once(wait(0),{style: {color: 'black'}}),
+    once(Resolver.reject(),(v) => ['span',v])
+  ]);
+
+  assert.strictEqual(d.innerHTML,'');
+  setter.value = 'brown';
+  assert.strictEqual(d.innerHTML,'<span>brown</span>');
+  setter.value = 'red';
+  assert.strictEqual(d.innerHTML,'<span>brown</span>');
+
+  yield wait(100);
+  assert.strictEqual(d.style.color,'black');
+  setter.value = 'black';
+  setter.value = false;
+  assert.strictEqual(d.innerHTML,'<span>brown</span>');
+
+  d[destroy]();
+  setter.value = 'red';
+  assert.strictEqual(d.innerHTML,'<span>brown</span>');
+});
+
+t('onNot',function(){
+
+  t('Getter',function(){
+    var setter = new Setter(),
+        getter = setter.getter,
+        d;
+
+    d = x(['div',onNot(getter,['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    setter.value = true;
+    setter.value = 1;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    setter.value = false;
+    setter.value = 0;
+    setter.value = null;
+    assert.
+      strictEqual(d.innerHTML,'<span>foo</span><span>foo</span><span>foo</span><span>foo</span>');
+
+
+  });
+
+  t('Yielded',function(){
+    var d;
+
+    d = x([onNot(Resolver.reject(),['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    d = x([onNot(Resolver.accept(),['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'');
+  });
+
+  t('Neither',function(){
+    var d;
+
+    d = x([onNot('click',['span','foo'])]);
+    d.click();
+    assert.strictEqual(d.innerHTML,'');
+  });
+
+});
+
+t('onceNot',function(){
+
+  t('Getter',function(){
+    var setter = new Setter(),
+        getter = setter.getter,
+        d;
+
+    d = x(['div',onceNot(getter,['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    setter.value = true;
+    setter.value = 1;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    setter.value = false;
+    setter.value = 0;
+    setter.value = null;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    setter.value = true;
+    d = x(['div',onceNot(getter,['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'');
+  });
+
+  t('Yielded',function(){
+    var d;
+
+    d = x([onceNot(Resolver.reject(),['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    d = x([onceNot(Resolver.accept(),['span','foo'])]);
+    assert.strictEqual(d.innerHTML,'');
+  });
+
+  t('Neither',function(){
+    var d;
+
+    d = x([onceNot('click',['span','foo'])]);
+    d.click();
+    assert.strictEqual(d.innerHTML,'');
+  });
+
 });
 
 t('Function hook',function*(){

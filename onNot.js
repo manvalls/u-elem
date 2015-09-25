@@ -4,11 +4,10 @@ var Getter = require('y-setter').Getter,
     listeners = require('./listeners.js'),
     collection = require('./collection.js');
 
-function on(){
+function onNot(){
   return {
     event: arguments[0],
     listener: arguments[1],
-    useCapture: arguments[2] ? true : false,
 
     [hook]: listen
   };
@@ -38,25 +37,19 @@ function listen(elem){
     return elem;
   }
 
-  listener = function(){
-    cb[hook](elem,arguments);
-  };
-
-  elem.addEventListener(this.event, listener, this.useCapture);
-  elem[listeners].push([this.event, listener, this.useCapture]);
   return elem;
 }
 
 // - utils
 
 function watcher(v,ov,c,cb,elem){
-  if(!!v) cb[hook](elem,[v,ov]);
+  if(!v) cb[hook](elem,[v,ov]);
 }
 
 function ydListener(cb,elem){
-  if(this.accepted) cb[hook](elem,[this.value]);
+  if(this.rejected) cb[hook](elem,[this.error]);
 }
 
 /*/ exports /*/
 
-module.exports = on;
+module.exports = onNot;

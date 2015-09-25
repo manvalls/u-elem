@@ -4,7 +4,7 @@ var Getter = require('y-setter').Getter,
     listeners = require('./listeners.js'),
     collection = require('./collection.js');
 
-function on(){
+function once(){
   return {
     event: arguments[0],
     listener: arguments[1],
@@ -16,41 +16,52 @@ function on(){
 
 function listen(elem){
   var cb = this.listener,
-      listener;
+      event = this.event,
+      useCapture = this.useCapture,
+      listener,lData;
 
   elem = elem || document.createElement('div');
 
-  if(Getter.is(this.event)){
+  if(Getter.is(event)){
 
     elem[collection].add(
-      this.event.watch(watcher,cb,elem)
+      event.watch(watcher,cb,elem)
     );
 
     return elem;
   }
 
-  if(Yielded.is(this.event)){
+  if(Yielded.is(event)){
 
     elem[collection].add(
-      this.event.listen(ydListener,[cb,elem])
+      event.listen(ydListener,[cb,elem])
     );
 
     return elem;
   }
 
   listener = function(){
+    var i;
+
     cb[hook](elem,arguments);
+    elem.removeEventListener(event,listener,useCapture);
+
+    i = elem[listeners].indexOf(lData);
+    if(i != -1) elem[listeners].splice(i,1);
   };
 
-  elem.addEventListener(this.event, listener, this.useCapture);
-  elem[listeners].push([this.event, listener, this.useCapture]);
+  elem.addEventListener(event, listener, useCapture);
+  elem[listeners].push(lData = [event, listener, useCapture]);
   return elem;
 }
 
 // - utils
 
 function watcher(v,ov,c,cb,elem){
-  if(!!v) cb[hook](elem,[v,ov]);
+  if(!!v){
+    cb[hook](elem,[v,ov]);
+    c.detach();
+  }
 }
 
 function ydListener(cb,elem){
@@ -59,4 +70,4 @@ function ydListener(cb,elem){
 
 /*/ exports /*/
 
-module.exports = on;
+module.exports = once;
