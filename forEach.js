@@ -5,13 +5,19 @@ function forEach(rul,func,thisArg){
   return {
     rul: rul,
     func: func,
-    thisArg: thisArg,
+    thisArg: thisArg || this,
     [hook]: hookFn
   };
 }
 
 function hookFn(parent){
-  var ctx = {};
+  var ctx = {},
+      i;
+
+  if(this.rul instanceof Array){
+    for(i = 0;i < this.rul.length;i++) this.func.call(this.thisArg,this.rul[i])[hook](parent);
+    return;
+  }
 
   parent = parent || document.createElement('div');
 

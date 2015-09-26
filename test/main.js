@@ -391,32 +391,43 @@ t('whenNot',function(){
 });
 
 t('forEach',function(){
-  var rul = new Rul(),
-      d = x('div','foobar');
 
-  rul.append([1,2,3]);
-  x(d,forEach(rul,n => ['span',n + '']));
+  t('rul',function(){
+    var rul = new Rul(),
+        d = x('div','foobar');
 
-  assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>2</span><span>3</span>');
+    rul.append([1,2,3]);
+    x(d,forEach(rul,n => ['span',n + '']));
 
-  rul.remove(1);
-  assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>3</span>');
+    assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>2</span><span>3</span>');
 
-  d = x(forEach(rul,n => ['span',n + '']));
-  assert.strictEqual(d.tagName,'DIV');
+    rul.remove(1);
+    assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>3</span>');
 
-  rul.add(2,1);
-  assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
+    d = x(forEach(rul,n => ['span',n + '']));
+    assert.strictEqual(d.tagName,'DIV');
 
-  rul.remove(0,2);
-  assert.strictEqual(d.innerHTML,'<span>3</span>');
+    rul.add(2,1);
+    assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
 
-  rul.append([4,5,6]);
-  rul.swap(2,1);
-  assert.strictEqual(d.innerHTML,'<span>3</span><span>5</span><span>4</span><span>6</span>');
+    rul.remove(0,2);
+    assert.strictEqual(d.innerHTML,'<span>3</span>');
 
-  rul.move(0,3);
-  assert.strictEqual(d.innerHTML,'<span>5</span><span>4</span><span>6</span><span>3</span>');
+    rul.append([4,5,6]);
+    rul.swap(2,1);
+    assert.strictEqual(d.innerHTML,'<span>3</span><span>5</span><span>4</span><span>6</span>');
+
+    rul.move(0,3);
+    assert.strictEqual(d.innerHTML,'<span>5</span><span>4</span><span>6</span><span>3</span>');
+  });
+
+  t('Array',function(){
+    var d = x('div',
+      forEach([1,2,3,4],(n) => ['span',`${n}`])
+    );
+
+    assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span><span>4</span>');
+  });
 
 });
 
