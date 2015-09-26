@@ -324,6 +324,15 @@ t('Function hook',function*(){
   assert.strictEqual(d.innerHTML,'<span>foo</span>');
 
   assert.strictEqual(x(()=>null).tagName,'DIV');
+
+  d = x(function*(){
+    yield wait(0);
+  });
+
+  assert.strictEqual(d.innerHTML,'');
+  assert.strictEqual(d.tagName,'DIV');
+  yield wait(100);
+  assert.strictEqual(d.innerHTML,'');
 });
 
 t('when',function(){
@@ -357,6 +366,37 @@ t('when',function(){
     s1.value = !s1.value;
     s2.value = !s2.value;
     assert.strictEqual(d.innerHTML,'');
+  });
+
+  t('Getter with timeout',function*(){
+    var setter = new Setter(),
+        getter = setter.getter,
+        d;
+
+    setter.value = true;
+    d = x('div',
+      when(getter,['span','foo'],500)
+    );
+
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    setter.value = false;
+    yield wait(100);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    yield wait(450);
+    assert.strictEqual(d.innerHTML,'');
+
+    setter.value = true;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    setter.value = false;
+
+    yield wait(100);
+    setter.value = true;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    yield wait(450);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+
   });
 
   t('Non-getter',function(){
@@ -401,6 +441,37 @@ t('whenNot',function(){
     s1.value = !s1.value;
     s2.value = !s2.value;
     assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+  });
+
+  t('Getter with timeout',function*(){
+    var setter = new Setter(),
+        getter = setter.getter,
+        d;
+
+    setter.value = false;
+    d = x('div',
+      whenNot(getter,['span','foo'],500)
+    );
+
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    setter.value = true;
+    yield wait(100);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    yield wait(450);
+    assert.strictEqual(d.innerHTML,'');
+
+    setter.value = false;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    setter.value = true;
+
+    yield wait(100);
+    setter.value = false;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+    yield wait(450);
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+
+
   });
 
   t('Non-getter',function(){
