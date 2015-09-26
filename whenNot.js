@@ -1,4 +1,5 @@
-var hook = require('./hook.js'),
+var Getter = require('y-setter').Getter,
+    hook = require('./hook.js'),
     destroy = require('./destroy.js'),
     collection = require('./collection.js');
 
@@ -12,10 +13,17 @@ function whenNot(){
 }
 
 function hookFn(parent){
-  var ref = document.createTextNode('');
+  var ref;
 
+  if(!Getter.is(this.getter)){
+    if(!this.getter) this.elem[hook](parent);
+    return;
+  }
+
+  ref = document.createTextNode('');
   parent = parent || document.createElement('div');
   parent.appendChild(ref);
+
   parent[collection].add(
     this.getter.watch(watchFn,this.elem,parent,ref,{})
   );

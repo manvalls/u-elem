@@ -1,4 +1,5 @@
-var collection = require('./collection.js'),
+var Rul = require('rul'),
+    collection = require('./collection.js'),
     hook = require('./hook.js');
 
 function forEach(rul,func,thisArg){
@@ -12,10 +13,10 @@ function forEach(rul,func,thisArg){
 
 function hookFn(parent){
   var ctx = {},
-      i;
+      item;
 
-  if(this.rul instanceof Array){
-    for(i = 0;i < this.rul.length;i++) this.func.call(this.thisArg,this.rul[i])[hook](parent);
+  if(!Rul.is(this.rul)){
+    for(item of this.rul) this.func.call(this.thisArg,item)[hook](parent);
     return;
   }
 

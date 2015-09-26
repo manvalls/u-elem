@@ -327,66 +327,90 @@ t('Function hook',function*(){
 });
 
 t('when',function(){
-  var s1 = new Setter(),
-      g1 = s1.getter,
-      s2 = new Setter(),
-      g2 = s2.getter,
-      d = x(
-        when(g1,['span',
-          'Hi!'
-        ]),
-        when(g2,['span',
-          'Ho!'
-        ])
-      );
 
-  assert.strictEqual(d.innerHTML,'');
-  s1.value = !s1.value;
-  assert.strictEqual(d.innerHTML,'<span>Hi!</span>');
-  s2.value = !s2.value;
-  assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
-  s1.value = !s1.value;
-  assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
-  s1.value = 0;
-  s2.value = 0;
-  assert.strictEqual(d.innerHTML,'');
+  t('Getter',function(){
+    var s1 = new Setter(),
+        g1 = s1.getter,
+        s2 = new Setter(),
+        g2 = s2.getter,
+        d = x(
+          when(g1,['span',
+            'Hi!'
+          ]),
+          when(g2,['span',
+            'Ho!'
+          ])
+        );
 
-  d[destroy]();
-  s1.value = !s1.value;
-  s2.value = !s2.value;
-  assert.strictEqual(d.innerHTML,'');
+    assert.strictEqual(d.innerHTML,'');
+    s1.value = !s1.value;
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span>');
+    s2.value = !s2.value;
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    s1.value = !s1.value;
+    assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
+    s1.value = 0;
+    s2.value = 0;
+    assert.strictEqual(d.innerHTML,'');
+
+    d[destroy]();
+    s1.value = !s1.value;
+    s2.value = !s2.value;
+    assert.strictEqual(d.innerHTML,'');
+  });
+
+  t('Non-getter',function(){
+    var d = x('div',
+      when(true,['span','foo']),
+      when(false,['span','bar'])
+    );
+
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+  });
 
 });
 
 t('whenNot',function(){
-  var s1 = new Setter(),
-      g1 = s1.getter,
-      s2 = new Setter(),
-      g2 = s2.getter,
-      d = x(
-        whenNot(g1,['span',
-          'Hi!'
-        ]),
-        whenNot(g2,['span',
-          'Ho!'
-        ])
-      );
 
-  assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
-  s1.value = !s1.value;
-  assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
-  s2.value = !s2.value;
-  assert.strictEqual(d.innerHTML,'');
-  s1.value = !s1.value;
-  assert.strictEqual(d.innerHTML,'<span>Hi!</span>');
-  s1.value = 0;
-  s2.value = 0;
-  assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+  t('Getter',function(){
+    var s1 = new Setter(),
+        g1 = s1.getter,
+        s2 = new Setter(),
+        g2 = s2.getter,
+        d = x(
+          whenNot(g1,['span',
+            'Hi!'
+          ]),
+          whenNot(g2,['span',
+            'Ho!'
+          ])
+        );
 
-  d[destroy]();
-  s1.value = !s1.value;
-  s2.value = !s2.value;
-  assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    s1.value = !s1.value;
+    assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
+    s2.value = !s2.value;
+    assert.strictEqual(d.innerHTML,'');
+    s1.value = !s1.value;
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span>');
+    s1.value = 0;
+    s2.value = 0;
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+
+    d[destroy]();
+    s1.value = !s1.value;
+    s2.value = !s2.value;
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+  });
+
+  t('Non-getter',function(){
+    var d = x('div',
+      whenNot(true,['span','foo']),
+      whenNot(false,['span','bar'])
+    );
+
+    assert.strictEqual(d.innerHTML,'<span>bar</span>');
+  });
 
 });
 

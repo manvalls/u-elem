@@ -8,15 +8,15 @@
     "detacher": "",
     "y-setter": "",
     "y-resolver": "",
-    "y-walk": ""
+    "y-walk": "",
+    "rul": ""
   },
   "devDependencies": {
     "coveralls": "^2",
     "istanbul": "",
     "jsdom": "^6.3.0",
     "u-test": "",
-    "y-timers": "",
-    "rul": ""
+    "y-timers": ""
   },
   "scripts": {
     "test": "bash test.sh"
