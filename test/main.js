@@ -516,6 +516,22 @@ t('forEach',function(){
     assert.strictEqual(d.innerHTML,'<span>5</span><span>4</span><span>6</span><span>3</span>');
   });
 
+  t('rul with timeout',function*(){
+    var rul = new Rul(),
+        d = x(forEach(rul,str => ['span',str],500));
+
+    rul.append(['1','2','3']);
+    assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
+    rul.clear();
+    assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
+
+    yield wait(400);
+    assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
+
+    yield wait(150);
+    assert.strictEqual(d.innerHTML,'');
+  });
+
   t('Array',function(){
     var d = x('div',
       forEach([1,2,3,4],(n) => ['span',`${n}`])

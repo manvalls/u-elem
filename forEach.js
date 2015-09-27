@@ -2,10 +2,17 @@ var Rul = require('rul'),
     collection = require('./collection.js'),
     hook = require('./hook.js');
 
-function forEach(rul,func,thisArg){
+function forEach(rul,func,thisArg,timeout){
+
+  if(typeof thisArg == 'number'){
+    timeout = thisArg;
+    thisArg = null;
+  }
+
   return {
     rul: rul,
     func: func,
+    timeout: timeout,
     thisArg: thisArg || this,
     [hook]: hookFn
   };
@@ -25,6 +32,7 @@ function hookFn(parent){
   ctx.parent = parent;
   ctx.func = this.func;
   ctx.thisArg = this.thisArg;
+  ctx.timeout = this.timeout;
   ctx.array = [];
 
   parent[collection].add(
@@ -51,7 +59,10 @@ function remove(index,size){
   var i = index,
       sz = size;
 
-  for(;size > 0;size--,index++) this.parent.removeChild(this.array[index]);
+  if(this.timeout == null) for(;size > 0;size--,index++) this.parent.removeChild(this.array[index]);
+  else for(;size > 0;size--,index++)
+    setTimeout(removeChild,this.timeout,this.parent,this.array[index]);
+
   this.array.splice(i,sz);
 }
 
@@ -64,6 +75,10 @@ function move(from,to){
   if(to == this.array.length) this.parent.appendChild(elem);
   else this.parent.insertBefore(elem,this.array[to]);
   this.array.splice(to,0,elem);
+}
+
+function removeChild(parent,child){
+  parent.removeChild(child);
 }
 
 /*/ exports /*/
