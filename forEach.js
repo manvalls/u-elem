@@ -20,37 +20,35 @@ function forEach(rul,func,thisArg,timeout){
 
 function hookFn(parent){
   var ctx = {},
-      item;
+      item,ref;
+
+  parent = parent || document.createElement('div');
 
   if(!Rul.is(this.rul)){
     for(item of this.rul) this.func.call(this.thisArg,item)[hook](parent);
     return;
   }
 
-  parent = parent || document.createElement('div');
+  ref = document.createTextNode('');
+  parent.appendChild(ref);
+  parent[collection].add(bindRul(parent,ref,this.rul,this.func,this.thisArg,this.timeout));
+  return parent;
+}
+
+function bindRul(parent,ref,rul,func,thisArg,timeout){
+  var ctx = {};
 
   ctx.parent = parent;
-  ctx.func = this.func;
-  ctx.thisArg = this.thisArg;
-  ctx.timeout = this.timeout;
-  ctx.array = [];
+  ctx.func = func;
+  ctx.thisArg = thisArg;
+  ctx.timeout = timeout;
+  ctx.array = [ref];
 
-  parent[collection].add(
-    this.rul.consume(add,remove,move,ctx)
-  );
-
-  return parent;
+  return rul.consume(add,remove,move,ctx);
 }
 
 function add(item,index){
   var elem = this.func.call(this.thisArg,item)[hook]();
-
-  if(index == this.array.length){
-    this.array.push(elem);
-    this.parent.appendChild(elem);
-    return;
-  }
-
   this.parent.insertBefore(elem,this.array[index]);
   this.array.splice(index,0,elem);
 }

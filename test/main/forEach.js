@@ -9,15 +9,16 @@ t('forEach',function(){
 
   t('rul',function(){
     var rul = new Rul(),
-        d = x('div','foobar');
+        d;
+
+    d = x('div','foo',forEach(rul,n => ['span',`${n}`]),'bar');
+    assert.strictEqual(d.innerHTML,'foobar');
 
     rul.append([1,2,3]);
-    x(d,forEach(rul,n => ['span',n + '']));
-
-    assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>2</span><span>3</span>');
+    assert.strictEqual(d.innerHTML,'foo<span>1</span><span>2</span><span>3</span>bar');
 
     rul.remove(1);
-    assert.strictEqual(d.innerHTML,'foobar<span>1</span><span>3</span>');
+    assert.strictEqual(d.innerHTML,'foo<span>1</span><span>3</span>bar');
 
     d = x(forEach(rul,n => ['span',n + '']));
     assert.strictEqual(d.tagName,'DIV');
