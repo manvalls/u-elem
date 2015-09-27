@@ -1,4 +1,5 @@
 var Rul = require('rul'),
+    Getter = require('y-setter').Getter,
     collection = require('./collection.js'),
     hook = require('./hook.js');
 
@@ -19,14 +20,24 @@ function forEach(rul,func,thisArg,timeout){
 }
 
 function hookFn(parent){
-  var ctx = {},
-      item,ref;
+  var item,ref;
 
   parent = parent || document.createElement('div');
 
+  if(Getter.is(this.rul)){
+    ref = document.createTextNode('');
+    parent.appendChild(ref);
+
+    parent[collection].add(
+      this.rul.watch(watcher,parent,ref,{},this.func,this.thisArg,this.timeout)
+    );
+
+    return parent;
+  }
+
   if(!Rul.is(this.rul)){
     for(item of this.rul) this.func.call(this.thisArg,item)[hook](parent);
-    return;
+    return parent;
   }
 
   ref = document.createTextNode('');
@@ -35,8 +46,27 @@ function hookFn(parent){
   return parent;
 }
 
-function bindRul(parent,ref,rul,func,thisArg,timeout){
-  var ctx = {};
+function watcher(v,ov,c,parent,ref,ctx,func,thisArg,timeout){
+  var rul;
+
+  if(ctx.rulCtx) remove.call(ctx.rulCtx,0,ctx.rulCtx.array.length - 1);
+  if(ctx.conn){
+    parent[collection].remove(ctx.conn);
+    ctx.conn.detach();
+  }
+
+  if(!Rul.is(v)){
+    rul = new Rul();
+    rul.append(v);
+  }else rul = v;
+
+  parent[collection].add(
+    ctx.conn = bindRul(parent,ref,rul,func,thisArg,timeout,ctx.rulCtx = {})
+  );
+}
+
+function bindRul(parent,ref,rul,func,thisArg,timeout,ctx){
+  ctx = ctx || {};
 
   ctx.parent = parent;
   ctx.func = func;
@@ -70,8 +100,7 @@ function move(from,to){
   elem = this.array.splice(from,1)[0];
   this.parent.removeChild(elem);
 
-  if(to == this.array.length) this.parent.appendChild(elem);
-  else this.parent.insertBefore(elem,this.array[to]);
+  this.parent.insertBefore(elem,this.array[to]);
   this.array.splice(to,0,elem);
 }
 

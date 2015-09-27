@@ -1,6 +1,7 @@
 var t = require('u-test'),
     assert = require('assert'),
     Rul = require('rul'),
+    Setter = require('y-setter'),
     wait = require('y-timers/wait'),
     x = require('../../main.js'),
     forEach = require('../../forEach.js');
@@ -59,6 +60,27 @@ t('forEach',function(){
     );
 
     assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span><span>4</span>');
+  });
+
+  t('Getter',function(){
+    var setter = new Setter([1,2,3]),
+        getter = setter.getter,
+        d = x('div','foo',forEach(getter,(n) => ['span',`${n}`]),'bar');
+
+    assert.strictEqual(d.innerHTML,'foo<span>1</span><span>2</span><span>3</span>bar');
+
+    setter.value = [];
+    assert.strictEqual(d.innerHTML,'foobar');
+
+    setter.value = new Rul();
+    setter.value.append([1,2]);
+
+    assert.strictEqual(d.innerHTML,'foo<span>1</span><span>2</span>bar');
+    setter.value.add(3);
+    assert.strictEqual(d.innerHTML,'foo<span>1</span><span>2</span><span>3</span>bar');
+
+    setter.value = ['--hi--'];
+    assert.strictEqual(d.innerHTML,'foo<span>--hi--</span>bar');
   });
 
 });
