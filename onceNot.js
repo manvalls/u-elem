@@ -45,13 +45,13 @@ function listen(elem){
 
 function watcher(v,ov,c,cb,elem){
   if(!v){
-    cb[hook](elem,[v,ov]);
+    cb[hook](elem,[v,ov],elem);
     c.detach();
   }
 }
 
 function ydListener(cb,elem){
-  if(this.rejected) cb[hook](elem,[this.error]);
+  if(this.rejected) cb[hook](elem,[this.error],elem);
 }
 
 /*/ exports /*/

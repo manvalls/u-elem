@@ -4,6 +4,7 @@ var define = require('u-proto/define'),
     Collection = require('detacher/collection'),
     Getter = require('y-setter').Getter,
     Resolver = require('y-resolver'),
+    Yielded = Resolver.Yielded,
 
     hook = require('../hook.js');
 
@@ -12,7 +13,22 @@ Object.prototype[define](hook,function(parent){
 },{writable: true});
 
 function hookFn(that,parent,sibling){
-  var txt,elem,ctrl,col;
+  var txt,elem,ctrl,col,ref;
+
+  if(Yielded.is(that)){
+
+    if(that.done){
+      if(that.value && that.value[hook]) return that.value[hook](parent);
+      return parent || document.createElement('div');
+    }
+
+    ref = document.createTextNode('');
+    parent = parent || document.createElement('div');
+    parent.appendChild(ref);
+
+    that.listen(ydListener,[parent,ref]);
+    return parent;
+  }
 
   if(typeof that.controller == 'function' && typeof that.view == 'function'){
     col = new Collection();
@@ -57,4 +73,14 @@ function listener(parent,that,sibling){
   that.controller = this.value[0];
   that.view = this.value[1];
   hookFn(that,parent,sibling);
+}
+
+function ydListener(parent,ref){
+  var elem;
+
+  if(this.value && this.value[hook]){
+    elem = this.value[hook]();
+    parent.insertBefore(elem,ref);
+  }
+
 }

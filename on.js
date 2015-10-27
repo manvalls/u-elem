@@ -39,7 +39,7 @@ function listen(elem){
   }
 
   listener = function(){
-    cb[hook](elem,arguments);
+    cb[hook](elem,arguments,elem);
   };
 
   elem.addEventListener(this.event, listener, this.useCapture);
@@ -50,11 +50,11 @@ function listen(elem){
 // - utils
 
 function watcher(v,ov,c,cb,elem){
-  if(!!v) cb[hook](elem,[v,ov]);
+  if(!!v) cb[hook](elem,[v,ov],elem);
 }
 
 function ydListener(cb,elem){
-  if(this.accepted) cb[hook](elem,[this.value]);
+  if(this.accepted) cb[hook](elem,[this.value],elem);
 }
 
 /*/ exports /*/
