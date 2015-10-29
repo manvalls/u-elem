@@ -1,5 +1,6 @@
 var define = require('u-proto/define'),
     apply = require('u-proto/apply'),
+    walk = require('y-walk'),
     collection = require('../collection'),
     Collection = require('detacher/collection'),
     Getter = require('y-setter').Getter,
@@ -34,7 +35,7 @@ function hookFn(that,parent,sibling){
     col = new Collection();
     ctrl = new that.controller(that,col);
 
-    elem = that.view(ctrl,that)[hook]();
+    elem = that.view[hook](null,[ctrl,that],that);
     elem[collection].add(col);
 
     if(!parent) parent = elem;
