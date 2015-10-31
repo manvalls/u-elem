@@ -16,16 +16,25 @@ t('destroy',function*(){
     i = x(['input',{type: 'checkbox'}, {checked: setter, foo: setter.getter}])
   );
 
-  assert.strictEqual(i.checked,true);
-  i.click();
-  yield wait(10);
-  assert.strictEqual(setter.value,false);
-  assert.strictEqual(i.foo,false);
+  x('body',d);
 
-  d[destroy]();
-  i.click();
-  yield wait(10);
-  assert.strictEqual(setter.value,false);
-  assert.strictEqual(i.foo,false);
+  t('Input initially checked',function(){
+    assert.strictEqual(i.checked,true);
+  });
+
+  yield t('Input unchecked after click',function*(){
+    i.click();
+    yield wait(10);
+    assert.strictEqual(setter.value,false);
+    assert.strictEqual(i.foo,false);
+  });
+
+  t('Clicks have no effect after destruction',function*(){
+    d[destroy]();
+    i.click();
+    yield wait(10);
+    assert.strictEqual(setter.value,false);
+    assert.strictEqual(i.foo,false);
+  });
 
 });

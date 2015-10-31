@@ -44,7 +44,7 @@ t('MVC',function(){
       foo: 'bar'
     },'foo');
 
-    yield wait(20);
+    yield wait(100);
     assert.strictEqual(d.innerHTML,'<div>bar</div>foo');
 
     d = x({
@@ -59,11 +59,11 @@ t('MVC',function(){
 
     d = x('span','foo',{
       view: require('./mvc/view'),
-      controller: tick(Promise.accept(require('./mvc/controller'))),
+      controller: tick(Promise.resolve(require('./mvc/controller'))),
       foo: 'foo'
     },'bar');
 
-    yield wait(15);
+    yield wait(100);
     assert.strictEqual(d.innerHTML,'foo<div>foo</div>bar');
   });
 

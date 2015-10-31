@@ -3,7 +3,6 @@
 rc=0
 rm -rf ./coverage
 mkdir coverage
-chromium-browser --version
 
 for file in test/*.js
 do
