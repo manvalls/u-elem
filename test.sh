@@ -2,6 +2,7 @@
 
 rc=0
 rm -rf ./coverage
+mkdir coverage
 
 for file in test/*.js
 do
