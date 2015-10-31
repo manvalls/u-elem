@@ -6,7 +6,6 @@ addons:
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
-  - "sudo apt-get -y update"
 language: node_js
 node_js:
   - "4.2"
