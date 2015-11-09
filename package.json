@@ -4,18 +4,18 @@
   "description": "Configure your own JsonML dialect",
   "main": "main.js",
   "dependencies": {
-    "u-proto": "",
-    "detacher": "",
-    "y-setter": "",
-    "y-resolver": "",
-    "y-walk": "",
-    "rul": ""
+    "detacher": "^1.4.0",
+    "rul": "^1.1.0",
+    "u-proto": "^5.4.0",
+    "y-resolver": "^6.1.0",
+    "y-setter": "^4.1.0",
+    "y-walk": "^10.0.0"
   },
   "devDependencies": {
-    "coveralls": "^2",
-    "istanbul": "",
-    "u-test": "",
-    "y-timers": ""
+    "coveralls": "^2.11.4",
+    "istanbul": "^0.4.0",
+    "u-test": "^2.2.3",
+    "y-timers": "^1.1.0"
   },
   "scripts": {
     "test": "bash test.sh"
