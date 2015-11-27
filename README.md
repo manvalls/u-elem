@@ -1,4 +1,4 @@
-# Elem [![Build Status][travis-img]][travis-url] [![Coverage Status][cover-img]][cover-url]
+# Elem [![Build Status][ci-img]][ci-url] [![Coverage Status][cover-img]][cover-url]
 
 ```javascript
 var x = require('u-elem'),
@@ -93,7 +93,7 @@ d[destroy]();
 
 And lastly, a note on variable names. You can see here that an `x` is used as the variable name of *Elem*. It was originally `elem`, but it was larger and less cool. One of the beauties of modules is that you can name things however you like without polluting the global namespace. Feel free to name it `x`, `elem`, `$`, `_` or even `ಠ_ಠ`. And for those of you not using modules, please stop doing so. Or, you know, just call it `x`.
 
-[travis-img]: https://travis-ci.org/manvalls/u-elem.svg?branch=master
-[travis-url]: https://travis-ci.org/manvalls/u-elem
+[ci-img]: https://circleci.com/gh/manvalls/u-elem.svg?style=shield
+[ci-url]: https://circleci.com/gh/manvalls/u-elem
 [cover-img]: https://coveralls.io/repos/manvalls/u-elem/badge.svg?branch=master&service=github
 [cover-url]: https://coveralls.io/github/manvalls/u-elem?branch=master

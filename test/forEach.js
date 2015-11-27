@@ -3,8 +3,8 @@ var t = require('u-test'),
     Rul = require('rul'),
     Setter = require('y-setter'),
     wait = require('y-timers/wait'),
-    x = require('../../main.js'),
-    forEach = require('../../forEach.js');
+    x = require('../main.js'),
+    forEach = require('../forEach.js');
 
 t('forEach',function(){
 

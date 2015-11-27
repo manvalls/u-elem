@@ -1,6 +1,6 @@
 var t = require('u-test'),
     assert = require('assert'),
-    x = require('../../main.js');
+    x = require('../main.js');
 
 t('Element creation and appending',function(){
   var e;

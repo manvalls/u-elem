@@ -1,7 +1,7 @@
 var t = require('u-test'),
     assert = require('assert'),
-    x = require('../../main.js'),
-    destroy = require('../../destroy.js'),
+    x = require('../main.js'),
+    destroy = require('../destroy.js'),
     tick = require('y-timers/tick'),
     wait = require('y-timers/wait');
 

@@ -1,12 +1,12 @@
 var t = require('u-test'),
     assert = require('assert'),
-    x = require('../../main.js'),
+    x = require('../main.js'),
     wait = require('y-timers/wait'),
     Setter = require('y-setter'),
-    destroy = require('../../destroy.js'),
-    whenNot = require('../../whenNot.js');
+    destroy = require('../destroy.js'),
+    when = require('../when.js');
 
-t('whenNot',function(){
+t('when',function(){
 
   t('Getter',function(){
     var s1 = new Setter(),
@@ -14,29 +14,29 @@ t('whenNot',function(){
         s2 = new Setter(),
         g2 = s2.getter,
         d = x(
-          whenNot(g1,['span',
+          when(g1,['span',
             'Hi!'
           ]),
-          whenNot(g2,['span',
+          when(g2,['span',
             'Ho!'
           ])
         );
 
-    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
-    s1.value = !s1.value;
-    assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
-    s2.value = !s2.value;
     assert.strictEqual(d.innerHTML,'');
     s1.value = !s1.value;
     assert.strictEqual(d.innerHTML,'<span>Hi!</span>');
+    s2.value = !s2.value;
+    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    s1.value = !s1.value;
+    assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
     s1.value = 0;
     s2.value = 0;
-    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    assert.strictEqual(d.innerHTML,'');
 
     d[destroy]();
     s1.value = !s1.value;
     s2.value = !s2.value;
-    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    assert.strictEqual(d.innerHTML,'');
   });
 
   t('Getter with timeout',function*(){
@@ -44,24 +44,24 @@ t('whenNot',function(){
         getter = setter.getter,
         d;
 
-    setter.value = false;
+    setter.value = true;
     d = x('div',
-      whenNot(getter,['span','foo'],500)
+      when(getter,['span','foo'],500)
     );
 
     assert.strictEqual(d.innerHTML,'<span>foo</span>');
-    setter.value = true;
+    setter.value = false;
     yield wait(100);
     assert.strictEqual(d.innerHTML,'<span>foo</span>');
     yield wait(450);
     assert.strictEqual(d.innerHTML,'');
 
-    setter.value = false;
-    assert.strictEqual(d.innerHTML,'<span>foo</span>');
     setter.value = true;
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
+    setter.value = false;
 
     yield wait(100);
-    setter.value = false;
+    setter.value = true;
     assert.strictEqual(d.innerHTML,'<span>foo</span>');
 
     yield wait(450);
@@ -72,11 +72,11 @@ t('whenNot',function(){
 
   t('Non-getter',function(){
     var d = x('div',
-      whenNot(true,['span','foo']),
-      whenNot(false,['span','bar'])
+      when(true,['span','foo']),
+      when(false,['span','bar'])
     );
 
-    assert.strictEqual(d.innerHTML,'<span>bar</span>');
+    assert.strictEqual(d.innerHTML,'<span>foo</span>');
   });
 
 });

@@ -2,9 +2,9 @@ var t = require('u-test'),
     assert = require('assert'),
     Setter = require('y-setter'),
     Resolver = require('y-resolver'),
-    x = require('../../main.js'),
-    once = require('../../once.js'),
-    destroy = require('../../destroy.js'),
+    x = require('../main.js'),
+    once = require('../once.js'),
+    destroy = require('../destroy.js'),
     wait = require('y-timers/wait');
 
 t('once',function*(){

@@ -1,6 +1,6 @@
 var t = require('u-test'),
     assert = require('assert'),
-    x = require('../../main.js'),
+    x = require('../main.js'),
     wait = require('y-timers/wait');
 
 t('Function hook',function*(){

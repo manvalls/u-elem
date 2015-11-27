@@ -1,8 +1,8 @@
 var t = require('u-test'),
     Setter = require('y-setter'),
     assert = require('assert'),
-    x = require('../../main.js'),
-    destroy = require('../../destroy.js');
+    x = require('../main.js'),
+    destroy = require('../destroy.js');
 
 t('Getter hook',function(){
   var setter = new Setter(''),

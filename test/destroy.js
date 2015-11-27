@@ -1,9 +1,9 @@
 var t = require('u-test'),
     assert = require('assert'),
     wait = require('y-timers/wait'),
-    x = require('../../main.js'),
+    x = require('../main.js'),
     Setter = require('y-setter'),
-    destroy = require('../../destroy.js');
+    destroy = require('../destroy.js');
 
 t('destroy',function*(){
   var setter = new Setter(),

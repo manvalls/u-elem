@@ -2,8 +2,8 @@ var t = require('u-test'),
     assert = require('assert'),
     Setter = require('y-setter'),
     Resolver = require('y-resolver'),
-    x = require('../../main.js'),
-    onceNot = require('../../onceNot.js');
+    x = require('../main.js'),
+    onceNot = require('../onceNot.js');
 
 t('onceNot',function(){
 
