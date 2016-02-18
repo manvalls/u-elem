@@ -1,6 +1,6 @@
 var Rul = require('rul'),
     Getter = require('y-setter').Getter,
-    collection = require('./collection.js'),
+    detacher = require('./detacher.js'),
     hook = require('./hook.js');
 
 function forEach(rul,func,thisArg,timeout){
@@ -28,7 +28,7 @@ function hookFn(parent){
     ref = document.createTextNode('');
     parent.appendChild(ref);
 
-    parent[collection].add(
+    parent[detacher].add(
       this.rul.watch(watcher,parent,ref,{},this.func,this.thisArg,this.timeout)
     );
 
@@ -42,7 +42,7 @@ function hookFn(parent){
 
   ref = document.createTextNode('');
   parent.appendChild(ref);
-  parent[collection].add(bindRul(parent,ref,this.rul,this.func,this.thisArg,this.timeout));
+  parent[detacher].add(bindRul(parent,ref,this.rul,this.func,this.thisArg,this.timeout));
   return parent;
 }
 
@@ -51,7 +51,7 @@ function watcher(v,ov,c,parent,ref,ctx,func,thisArg,timeout){
 
   if(ctx.rulCtx) remove.call(ctx.rulCtx,0,ctx.rulCtx.array.length - 1);
   if(ctx.conn){
-    parent[collection].remove(ctx.conn);
+    parent[detacher].remove(ctx.conn);
     ctx.conn.detach();
   }
 
@@ -60,7 +60,7 @@ function watcher(v,ov,c,parent,ref,ctx,func,thisArg,timeout){
     rul.append(v);
   }else rul = v;
 
-  parent[collection].add(
+  parent[detacher].add(
     ctx.conn = bindRul(parent,ref,rul,func,thisArg,timeout,ctx.rulCtx = {})
   );
 }

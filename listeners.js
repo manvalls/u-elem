@@ -1,5 +1,4 @@
-var Collection = require('detacher/collection'),
-    define = require('u-proto/define'),
+var define = require('u-proto/define'),
     listeners = Symbol(),
     innerLis = Symbol();
 

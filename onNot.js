@@ -2,7 +2,7 @@ var Getter = require('y-setter').Getter,
     Yielded = require('y-resolver').Yielded,
     hook = require('./hook.js'),
     listeners = require('./listeners.js'),
-    collection = require('./collection.js');
+    detacher = require('./detacher.js');
 
 function onNot(){
   return {
@@ -21,7 +21,7 @@ function listen(elem){
 
   if(Getter.is(this.event)){
 
-    elem[collection].add(
+    elem[detacher].add(
       this.event.watch(watcher,cb,elem)
     );
 
@@ -30,7 +30,7 @@ function listen(elem){
 
   if(Yielded.is(this.event)){
 
-    elem[collection].add(
+    elem[detacher].add(
       this.event.listen(ydListener,[cb,elem])
     );
 

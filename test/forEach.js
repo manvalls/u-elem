@@ -47,10 +47,10 @@ t('forEach',function(){
     rul.clear();
     assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
 
-    yield wait(400);
+    yield wait(200);
     assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
 
-    yield wait(150);
+    yield wait(500);
     assert.strictEqual(d.innerHTML,'');
   });
 

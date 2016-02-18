@@ -1,7 +1,7 @@
 var Getter = require('y-setter').Getter,
     hook = require('./hook.js'),
     destroy = require('./destroy.js'),
-    collection = require('./collection.js');
+    detacher = require('./detacher.js');
 
 function whenNot(){
   return {
@@ -25,7 +25,7 @@ function hookFn(parent){
   parent = parent || document.createElement('div');
   parent.appendChild(ref);
 
-  parent[collection].add(
+  parent[detacher].add(
     this.getter.watch(watchFn,this.elem,parent,ref,{},this.timeout)
   );
 
@@ -51,7 +51,7 @@ function watchFn(v,ov,d,elem,parent,ref,ctx,timeout){
       remove(parent,ctx);
     }
 
-    ctx.elem = elem[hook]();
+    ctx.elem = elem[hook](null,this);
     parent.insertBefore(ctx.elem,ref);
   }
 

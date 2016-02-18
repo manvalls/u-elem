@@ -1,14 +1,14 @@
-var Collection = require('detacher/collection'),
+var Detacher = require('detacher'),
     define = require('u-proto/define'),
-    collection = Symbol(),
+    detacher = Symbol(),
     innerCol = Symbol();
 
 Node.prototype[define]({
 
-  get [collection](){
+  get [detacher](){
     if(this[innerCol]) return this[innerCol];
 
-    this[innerCol] = new Collection();
+    this[innerCol] = new Detacher();
     this.addEventListener('destruction',onDestruction,false);
     return this[innerCol];
   }
@@ -25,4 +25,4 @@ function onDestruction(){
 
 /*/ exports /*/
 
-module.exports = collection;
+module.exports = detacher;

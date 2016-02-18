@@ -1,8 +1,8 @@
 var define = require('u-proto/define'),
     apply = require('u-proto/apply'),
     walk = require('y-walk'),
-    collection = require('../collection'),
-    Collection = require('detacher/collection'),
+    detacher = require('../detacher'),
+    Detacher = require('detacher'),
     Getter = require('y-setter').Getter,
     Resolver = require('y-resolver'),
     Yielded = Resolver.Yielded,
@@ -14,7 +14,7 @@ Object.prototype[define](hook,function(parent){
 },{writable: true});
 
 function hookFn(that,parent,sibling){
-  var txt,elem,ctrl,col,ref;
+  var txt,elem,ctrl,d,ref;
 
   if(Yielded.is(that)){
 
@@ -32,11 +32,11 @@ function hookFn(that,parent,sibling){
   }
 
   if(typeof that.controller == 'function' && typeof that.view == 'function'){
-    col = new Collection();
-    ctrl = new that.controller(that,col);
+    d = new Detacher();
+    ctrl = new that.controller(that,d);
 
     elem = that.view[hook](null,[ctrl,that],that);
-    elem[collection].add(col);
+    elem[detacher].add(d);
 
     if(!parent) parent = elem;
     else if(sibling) parent.insertBefore(elem,sibling);
@@ -60,12 +60,12 @@ function hookFn(that,parent,sibling){
 
   if(Getter.is(that)){
     txt = document.createTextNode('');
-    txt[collection].add(that.connect(txt,'textContent'));
+    txt[detacher].add(that.connect(txt,'textContent'));
     parent.appendChild(txt);
     return parent;
   }
 
-  parent[apply](that,parent[collection]);
+  parent[apply](that,parent[detacher]);
   return parent;
 
 }
