@@ -1,13 +1,20 @@
-var Getter = require('y-setter').Getter,
+var Setter = require('y-setter'),
+    Getter = Setter.Getter,
     hook = require('./hook.js'),
     destroy = require('./destroy.js'),
-    detacher = require('./detacher.js');
+    detacher = require('./detacher.js'),
+    getter = Symbol(),
+    element = Symbol(),
+    timeout = Symbol();
 
-function when(){
+function when(g,e,t){
+
+  if(!Getter.is(g)) g = (new Setter(g)).getter;
+
   return {
-    getter: arguments[0],
-    elem: arguments[1],
-    timeout: arguments[2],
+    [getter]: g,
+    [element]: e,
+    [timeout]: t,
 
     [hook]: hookFn
   };
@@ -16,17 +23,12 @@ function when(){
 function hookFn(parent){
   var ref;
 
-  if(!Getter.is(this.getter)){
-    if(this.getter) this.elem[hook](parent);
-    return;
-  }
-
   ref = document.createTextNode('');
   parent = parent || document.createElement('div');
   parent.appendChild(ref);
 
   parent[detacher].add(
-    this.getter.watch(watchFn,this.elem,parent,ref,{},this.timeout)
+    this[getter].watch(watchFn,this[element],parent,ref,{},this[timeout])
   );
 
   return parent;
