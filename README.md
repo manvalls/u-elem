@@ -63,13 +63,11 @@ You may want to take a look at [on.js](on.js) to see how hooks may be used to do
 ```javascript
 var x = require('u-elem'),
     when = require('u-elem/when'),
-    whenNot = require('u-elem/whenNot'),
     H = require('y-setter').Hybrid,
 
     h = new H(),
     d = x('div',
-      when(h,['span','Yes!']),
-      whenNot(h,['span','No!'])
+      when(h,['span','Yes!']).else(['span','No!'])
     );
 
 h.value = true;
@@ -79,7 +77,7 @@ h.value = false;
 console.log(d.innerHTML); // <span>No!</span>
 ```
 
-One thing remains: the cleanup. If your hook needs to do some operations when the element is to be discarded, it should listen for the `destruction` event. *Elem* ships with a utility method to dispatch `destruction` events at an element and all its children, use it when you're done with a node, like this:
+One thing remains: the cleanup. Each node gets assigned a `detacher` to its `require('u-elem/detacher')` property. *Elem* ships with a utility method to detach an element's detacher and all of its children, use it when you're done with a node, like this:
 
 ```javascript
 var x = require('u-elem'),
@@ -89,6 +87,20 @@ var x = require('u-elem'),
 //...
 
 d[destroy]();
+```
+
+Or listen to a detacher to do your cleanup:
+
+```javascript
+var x = require('u-elem'),
+    detacher = require('u-elem/detacher'),
+    d = x('div');
+
+//...
+
+d[detacher].then(function(){
+  // do your cleanup
+});
 ```
 
 And lastly, a note on variable names. You can see here that an `x` is used as the variable name of *Elem*. It was originally `elem`, but it was larger and less cool. One of the beauties of modules is that you can name things however you like without polluting the global namespace. Feel free to name it `x`, `elem`, `$`, `_` or even `ಠ_ಠ`. And for those of you not using modules, please stop doing so. Or, you know, just call it `x`.

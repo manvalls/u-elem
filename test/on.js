@@ -3,7 +3,7 @@ var t = require('u-test'),
     Setter = require('y-setter'),
     Resolver = require('y-resolver'),
     x = require('../main.js'),
-    on = require('../on.js'),
+    on = require('../hooks.js').on,
     destroy = require('../destroy.js'),
     wait = require('y-timers/wait');
 
@@ -38,9 +38,9 @@ t('on',function*(){
   assert.strictEqual(d.innerHTML,'<div>foobar</div><div>foobar</div>');
 
   d = x([
-    on(getter,(v) => ['span',v]),
+    on(getter,v => ['span',v]),
     on(wait(0),{style: {color: 'black'}}),
-    on(Resolver.reject(),(v) => ['span',v])
+    on(Resolver.reject(null,true),(v) => ['span',v])
   ]);
 
   assert.strictEqual(d.innerHTML,'<span>red</span>');
@@ -56,4 +56,18 @@ t('on',function*(){
   d[destroy]();
   setter.value = 'red';
   assert.strictEqual(d.innerHTML,'<span>red</span><span>brown</span><span>black</span>');
+
+  setter.value = false;
+  d = x('div',
+    on(getter,{style: {color: 'orange'}})
+    .elseOn(wait(0),{style: {color: 'green'}})
+    .else({style: {color: 'yellow'}})
+  );
+
+  assert.strictEqual(d.style.color,'yellow');
+  yield wait(100);
+  assert.strictEqual(d.style.color,'green');
+  setter.value = true;
+  assert.strictEqual(d.style.color,'orange');
+
 });

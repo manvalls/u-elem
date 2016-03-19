@@ -3,10 +3,32 @@ var t = require('u-test'),
     x = require('../main.js'),
     wait = require('y-timers/wait'),
     Setter = require('y-setter'),
+    Yielded = require('y-resolver').Yielded,
     destroy = require('../destroy.js'),
-    when = require('../when.js');
+    when = require('../hooks/when.js');
 
 t('when',function(){
+
+  t('else',function(){
+    var s = new Setter(),
+        g = s.getter,
+        s2 = new Setter(),
+        g2 = s2.getter;
+        d = x('div',
+          when(g,['span','yes'])
+          .elseWhen(g2,['span','2'])
+          .else(['span','no'])
+        );
+
+    assert.strictEqual(d.innerHTML,'<span>no</span>');
+    s.value = true;
+    assert.strictEqual(d.innerHTML,'<span>yes</span>');
+    s.value = false;
+    assert.strictEqual(d.innerHTML,'<span>no</span>');
+    s2.value = true;
+    assert.strictEqual(d.innerHTML,'<span>2</span>');
+
+  });
 
   t('Getter',function(){
     var s1 = new Setter(),
@@ -72,7 +94,7 @@ t('when',function(){
 
   t('Non-getter',function(){
     var d = x('div',
-      when(true,['span','foo']),
+      when({[Yielded.getter]: null},['span','foo']),
       when(false,['span','bar'])
     );
 

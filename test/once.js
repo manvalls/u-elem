@@ -3,7 +3,7 @@ var t = require('u-test'),
     Setter = require('y-setter'),
     Resolver = require('y-resolver'),
     x = require('../main.js'),
-    once = require('../once.js'),
+    once = require('../hooks/once.js'),
     destroy = require('../destroy.js'),
     wait = require('y-timers/wait');
 
@@ -42,9 +42,12 @@ t('once',function*(){
   d = x([
     once(getter,(v) => ['span',v]),
     once(wait(0),{style: {color: 'black'}}),
+    once({[Resolver.Yielded.getter]: null},{style: {margin: '0px'}}),
+    once(false,{style: {margin: '5px'}}),
     once(Resolver.reject(),(v) => ['span',v])
   ]);
 
+  assert.strictEqual(d.style.margin,'0px');
   assert.strictEqual(d.innerHTML,'');
   setter.value = 'brown';
   assert.strictEqual(d.innerHTML,'<span>brown</span>');

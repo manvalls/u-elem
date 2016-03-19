@@ -1,13 +1,13 @@
 var define = require('u-proto/define'),
     apply = require('u-proto/apply'),
     walk = require('y-walk'),
-    detacher = require('../detacher'),
+    detacher = require('../../detacher'),
     Detacher = require('detacher'),
     Getter = require('y-setter').Getter,
     Resolver = require('y-resolver'),
     Yielded = Resolver.Yielded,
 
-    hook = require('../hook.js');
+    hook = require('../../hook.js');
 
 Object.prototype[define](hook,function(parent){
   return hookFn(this,parent);

@@ -4,7 +4,7 @@ var t = require('u-test'),
     Setter = require('y-setter'),
     wait = require('y-timers/wait'),
     x = require('../main.js'),
-    forEach = require('../forEach.js');
+    forEach = require('../hooks/forEach.js');
 
 t('forEach',function(){
 

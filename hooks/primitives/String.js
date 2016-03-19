@@ -1,5 +1,5 @@
 var define = require('u-proto/define'),
-    hook = require('../hook.js'),
+    hook = require('../../hook.js'),
 
     onlyOne = [
       'body',

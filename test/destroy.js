@@ -24,7 +24,7 @@ t('destroy',function*(){
 
   yield t('Input unchecked after click',function*(){
     i.click();
-    yield wait(10);
+    yield wait(100);
     assert.strictEqual(setter.value,false);
     assert.strictEqual(i.foo,false);
   });
@@ -32,7 +32,7 @@ t('destroy',function*(){
   t('Clicks have no effect after destruction',function*(){
     d[destroy]();
     i.click();
-    yield wait(10);
+    yield wait(100);
     assert.strictEqual(setter.value,false);
     assert.strictEqual(i.foo,false);
   });
