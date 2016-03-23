@@ -1,14 +1,16 @@
-var Rul = require('rul'),
-    Getter = require('y-setter').Getter,
+var Detacher = require('detacher'),
+    Setter = require('y-setter'),
+    getGetter = require('./utils/getGetter.js'),
     detacher = require('../detacher.js'),
     hook = require('../hook.js'),
-    getRul = require('./utils/getRul.js'),
-    rul = Symbol(),
-    callback = Symbol(),
+    getter = Symbol(),
+    func = Symbol(),
     thisArg = Symbol(),
-    timeout = Symbol();
+    timeout = Symbol(),
+    eobj = Symbol(),
+    eidx = Symbol();
 
-function forEach(r,func,that,t){
+function forEach(g,f,that,t){
 
   if(typeof that == 'number'){
     t = that;
@@ -16,65 +18,112 @@ function forEach(r,func,that,t){
   }
 
   return {
-    [rul]: r,
-    [callback]: func,
-    [timeout]: t,
-    [thisArg]: that || this,
+  	[getter]: g,
+  	[func]: f,
+  	[thisArg]: that,
+  	[timeout]: t,
     [hook]: hookFn
   };
 }
 
 function hookFn(parent){
-  var item,ref,r,ctx;
+  var g,ref;
 
   parent = parent || document.createElement('div');
-  r = getRul(this[rul],parent[detacher]);
-
   ref = document.createTextNode('');
   parent.appendChild(ref);
-  ctx = ctx || {};
-
-  ctx.parent = parent;
-  ctx.callback = this[callback];
-  ctx.thisArg = this[thisArg];
-  ctx.timeout = this[timeout];
-  ctx.array = [ref];
+  g = getGetter(this[getter]);
 
   parent[detacher].add(
-    r.consume(add,remove,move,ctx)
+    g.watch(watcher,parent,ref,this[func],this[thisArg],this[timeout],new Map(),new Map(),{elems: new Set()})
   );
 
   return parent;
 }
 
-function add(item,index){
-  var elem = this.callback.call(this.thisArg,item)[hook]();
-  this.parent.insertBefore(elem,this.array[index]);
-  this.array.splice(index,0,elem);
+function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
+	var elems = new Set(),
+	    d = new Detacher(),
+	    elem,obj,it,idx,
+      old,i,increment,data;
+
+  v = v || [];
+  i = 0;
+  for(obj of v){
+
+  	if(map.has(obj)){
+
+      elem = map.get(obj);
+      elem[eidx].value = i;
+      elems.add(elem);
+
+  	}else{
+
+      idx = new Setter(i);
+  	  elem = func[hook](null,[obj,idx.getter],thisArg || parent);
+      elem[eidx] = idx;
+
+  	  elems.add(elem);
+  	  map.set(obj,elem);
+  	  elem[eobj] = obj;
+
+      if(dm.has(obj)){
+        data = dm.get(obj);
+        dm.delete(obj);
+        parent.removeChild(data.element);
+        clearTimeout(data.timeout);
+      }
+
+  	}
+
+    i++;
+
+  }
+
+  for(elem of ctx.elems){
+
+  	if(!elems.has(elem)){
+
+  	  d.add(elem[detacher]);
+      obj = elem[eobj];
+      delete elem[eobj];
+  	  map.delete(obj);
+
+      if(timeout) dm.set(obj,{
+        timeout: setTimeout(remove,timeout,parent,elem,obj,dm),
+        element: elem
+      });
+  	  else parent.removeChild(elem);
+  	  ctx.elems.delete(elem);
+
+  	}
+
+  }
+
+  it = ctx.elems.values();
+  increment = true;
+
+  for(elem of elems){
+
+    if(increment) old = it.next();
+
+  	if(old.done){
+  	  parent.insertBefore(elem,ref);
+      increment = false;
+  	}else if(old.value != elem){
+  	  parent.insertBefore(elem,old.value);
+      ctx.elems.delete(elem);
+      increment = false;
+  	}else increment = true;
+
+  }
+
+  ctx.elems = elems;
+  d.detach();
 }
 
-function remove(index,size){
-  var i = index,
-      sz = size;
-
-  if(this.timeout == null) for(;size > 0;size--,index++) this.parent.removeChild(this.array[index]);
-  else for(;size > 0;size--,index++)
-    setTimeout(removeChild,this.timeout,this.parent,this.array[index]);
-
-  this.array.splice(i,sz);
-}
-
-function move(from,to){
-  var elem;
-
-  elem = this.array.splice(from,1)[0];
-  this.parent.removeChild(elem);
-
-  this.parent.insertBefore(elem,this.array[to]);
-  this.array.splice(to,0,elem);
-}
-
-function removeChild(parent,child){
+function remove(parent,child,obj,dm){
+  dm.delete(obj);
   parent.removeChild(child);
 }
 

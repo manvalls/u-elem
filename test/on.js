@@ -69,5 +69,7 @@ t('on',function*(){
   assert.strictEqual(d.style.color,'green');
   setter.value = true;
   assert.strictEqual(d.style.color,'orange');
+  setter.touch();
+  assert.strictEqual(d.style.color,'orange');
 
 });
