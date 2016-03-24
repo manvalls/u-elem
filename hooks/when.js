@@ -4,39 +4,36 @@ var Getter = require('y-setter').Getter,
     hook = require('../hook.js'),
     destroy = require('../destroy.js'),
     detacher = require('../detacher.js'),
-    getter = Symbol(),
-    element = Symbol(),
-    timeout = Symbol(),
     chain = Symbol(),
     done = 'RB1wB9hCtPCR2IU';
 
 class WhenHook{
 
-  constructor(getter,element,timeout){
+  constructor(getter,element,opt){
     this[chain] = [{
       getter: getter,
       element: element,
-      timeout: timeout
+      options: opt || {}
     }];
   }
 
-  else(element,timeout){
+  else(element,opt){
 
     this[chain].push({
       getter: true,
       element: element,
-      timeout: timeout
+      options: opt || {}
     });
 
     return this;
   }
 
-  elseWhen(getter,element,timeout){
+  elseWhen(getter,element,opt){
 
     this[chain].push({
       getter: getter,
       element: element,
-      timeout: timeout
+      options: opt || {}
     });
 
     return this;
@@ -56,7 +53,7 @@ class WhenHook{
       ctxChain.push({
         getter: g,
         element: obj.element,
-        timeout: obj.timeout
+        options: obj.options
       });
 
     }
@@ -93,9 +90,9 @@ function watchFn(obj,oldObj,d,parent,ref){
     delete oldObj.domElement;
     domElement[destroy]();
 
-    if(oldObj.timeout != null){
+    if(oldObj.options.removalTimeout != null){
       oldObj.domElement = domElement;
-      oldObj.timer = setTimeout(remove,oldObj.timeout,parent,oldObj,domElement);
+      oldObj.timer = setTimeout(remove,oldObj.options.removalTimeout,parent,oldObj,domElement);
     }else parent.removeChild(domElement);
   }
 

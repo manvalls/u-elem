@@ -5,23 +5,15 @@ var Detacher = require('detacher'),
     hook = require('../hook.js'),
     getter = Symbol(),
     func = Symbol(),
-    thisArg = Symbol(),
-    timeout = Symbol(),
+    options = Symbol(),
     eobj = Symbol(),
     eidx = Symbol();
 
-function forEach(g,f,that,t){
-
-  if(typeof that == 'number'){
-    t = that;
-    that = null;
-  }
-
+function forEach(g,f,opt){
   return {
   	[getter]: g,
   	[func]: f,
-  	[thisArg]: that,
-  	[timeout]: t,
+    [options]: opt || {},
     [hook]: hookFn
   };
 }
@@ -35,13 +27,13 @@ function hookFn(parent){
   g = getGetter(this[getter]);
 
   parent[detacher].add(
-    g.watch(watcher,parent,ref,this[func],this[thisArg],this[timeout],new Map(),new Map(),{elems: new Set()})
+    g.watch(watcher,parent,ref,this[func],this[options],new Map(),new Map(),{elems: new Set()})
   );
 
   return parent;
 }
 
-function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
+function watcher(v,ov,d,parent,ref,func,opt,map,dm,ctx){
 	var elems = new Set(),
 	    d = new Detacher(),
 	    elem,obj,it,idx,
@@ -49,6 +41,7 @@ function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
 
   v = v || [];
   i = 0;
+
   for(obj of v){
 
   	if(map.has(obj)){
@@ -60,7 +53,7 @@ function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
   	}else{
 
       idx = new Setter(i);
-  	  elem = func[hook](null,[obj,idx.getter],thisArg || parent);
+  	  elem = func[hook](null,[obj,idx.getter],parent);
       elem[eidx] = idx;
 
   	  elems.add(elem);
@@ -73,6 +66,8 @@ function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
         parent.removeChild(data.element);
         clearTimeout(data.timeout);
       }
+
+      if(opt.reorder === false) parent.insertBefore(elem,ref);
 
   	}
 
@@ -89,8 +84,8 @@ function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
       delete elem[eobj];
   	  map.delete(obj);
 
-      if(timeout) dm.set(obj,{
-        timeout: setTimeout(remove,timeout,parent,elem,obj,dm),
+      if(opt.removalTimeout) dm.set(obj,{
+        timeout: setTimeout(remove,opt.removalTimeout,parent,elem,obj,dm),
         element: elem
       });
   	  else parent.removeChild(elem);
@@ -100,21 +95,25 @@ function watcher(v,ov,d,parent,ref,func,thisArg,timeout,map,dm,ctx){
 
   }
 
-  it = ctx.elems.values();
-  increment = true;
+  if(opt.reorder !== false){
 
-  for(elem of elems){
+    it = ctx.elems.values();
+    increment = true;
 
-    if(increment) old = it.next();
+    for(elem of elems){
 
-  	if(old.done){
-  	  parent.insertBefore(elem,ref);
-      increment = false;
-  	}else if(old.value != elem){
-  	  parent.insertBefore(elem,old.value);
-      ctx.elems.delete(elem);
-      increment = false;
-  	}else increment = true;
+      if(increment) old = it.next();
+
+    	if(old.done){
+    	  parent.insertBefore(elem,ref);
+        increment = false;
+    	}else if(old.value != elem){
+    	  parent.insertBefore(elem,old.value);
+        ctx.elems.delete(elem);
+        increment = false;
+    	}else increment = true;
+
+    }
 
   }
 

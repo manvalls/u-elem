@@ -4,8 +4,6 @@ var Getter = require('y-setter').Getter,
     hook = require('../hook.js'),
     destroy = require('../destroy.js'),
     detacher = require('../detacher.js'),
-    getter = Symbol(),
-    element = Symbol(),
     chain = Symbol(),
     done = 'RB1wB9hCtPCR2IU';
 

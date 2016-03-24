@@ -35,9 +35,33 @@ t('forEach',function(){
     assert.strictEqual(d.innerHTML,'<span>3</span>');
   });
 
+  t('Getter w/o reordering',function(){
+    var setter = new Setter([]),
+        d;
+
+    d = x('div',
+      'foo',
+      forEach(setter.getter,(n,index) => ['span',`${n},`,index],{reorder: false}),
+      'bar'
+    );
+
+    assert.strictEqual(d.innerHTML,'foobar');
+
+    setter.value = [1,2,3];
+    assert.strictEqual(d.innerHTML,'foo<span>1,0</span><span>2,1</span><span>3,2</span>bar');
+
+    setter.value.splice(1,1);
+    setter.update();
+    assert.strictEqual(d.innerHTML,'foo<span>1,0</span><span>3,1</span>bar');
+
+    setter.value = [1,2,3];
+    assert.strictEqual(d.innerHTML,'foo<span>1,0</span><span>3,2</span><span>2,1</span>bar');
+
+  });
+
   t('Getter with timeout',function*(){
     var setter = new Setter(['1','2','3']),
-        d = x(forEach(setter.getter,str => ['span',str],500));
+        d = x(forEach(setter.getter,str => ['span',str],{removalTimeout: 500}));
 
     assert.strictEqual(d.innerHTML,'<span>1</span><span>2</span><span>3</span>');
     setter.value = [];

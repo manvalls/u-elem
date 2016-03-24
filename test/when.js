@@ -68,7 +68,7 @@ t('when',function(){
 
     setter.value = true;
     d = x('div',
-      when(getter,['span','foo'],500)
+      when(getter,['span','foo'],{removalTimeout: 500})
     );
 
     assert.strictEqual(d.innerHTML,'<span>foo</span>');
