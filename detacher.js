@@ -1,6 +1,6 @@
 var Detacher = require('detacher'),
     define = require('u-proto/define'),
-    detacher = Symbol(),
+    detacher = 'q8fbo31unDH6bL9',
     innerCol = 'fEOxfrCMFoiZZJb';
 
 Node.prototype[define]({
