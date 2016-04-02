@@ -2,20 +2,15 @@ var define = require('u-proto/define'),
     hook = require('../../hook.js');
 
 Array.prototype[define](hook,function h(parent){
-  var i,ret,e,c;
-
-  if(parent){
-    c = h.call(this);
-    parent.appendChild(c);
-    return;
-  }
+  var i,ret,e;
 
   for(i = 0;i < this.length;i++){
     if(ret) break;
     if(this[i] != null && this[i][hook]) ret = this[i][hook]();
   }
 
-  if(!ret) return document.createElement('div');
+  if(!ret) ret = document.createElement('div');
+  if(parent) parent.appendChild(ret);
 
   for(;i < this.length;i++){
     if(this[i] == null) e = '';
