@@ -15,7 +15,8 @@ function getYielded(obj,parent){
 
 function fromString(event,elem){
   var resolver = new Resolver(),
-      d;
+      det = elem[detacher],
+      m,d;
 
   function listener(ev){
   	resolver.accept(ev);
@@ -23,9 +24,15 @@ function fromString(event,elem){
     d.detach();
   }
 
+  m = event.match(/^window\.(.*)/);
+  if(m){
+    elem = global.window;
+    event = m[1];
+  }
+
   elem.addEventListener(event,listener,false);
-  d = elem[detacher].listen(elem.removeEventListener,[event,listener,false],elem);
-  elem[detacher].add(resolver);
+  d = det.listen(elem.removeEventListener,[event,listener,false],elem);
+  det.add(resolver);
 
   return resolver.yielded;
 }

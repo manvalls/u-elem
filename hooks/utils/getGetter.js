@@ -34,15 +34,23 @@ function ydListener(setter){
 }
 
 function fromString(event,elem){
-  var setter = new Setter(null);
+  var setter = new Setter(null),
+      det = elem[detacher],
+      m;
 
   function listener(ev){
   	setter.value = ev;
   }
 
+  m = event.match(/^window\.(.*)/);
+  if(m){
+    elem = global.window;
+    event = m[1];
+  }
+
   elem.addEventListener(event,listener,false);
-  elem[detacher].listen(elem.removeEventListener,[event,listener,false],elem);
-  elem[detacher].add(setter);
+  det.listen(elem.removeEventListener,[event,listener,false],elem);
+  det.add(setter);
 
   return setter.getter;
 }

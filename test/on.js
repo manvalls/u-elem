@@ -12,9 +12,11 @@ t('on',function*(){
       getter = setter.getter,
       n = 0,
       d = x([
-        on('click',() => void n++),
-        on('click',() => void n++,true)
+        on('window.click',() => void n++),
+        on('click',() => void n++)
       ]);
+
+  x('body',d);
 
   d.click();
   assert.strictEqual(n,2);
@@ -23,6 +25,7 @@ t('on',function*(){
   d[destroy]();
   d.click();
   assert.strictEqual(n,2);
+  d.remove();
 
   d = x([
     on('click',() => ['div','foo','bar']),

@@ -12,9 +12,11 @@ t('once',function*(){
       getter = setter.getter,
       n = 0,
       d = x([
-        once('click',() => void n++),
-        once('click',() => void n++,true)
+        once('window.click',() => void n++),
+        once('click',() => void n++)
       ]);
+
+  x('body',d);
 
   d.click();
   d.click();
@@ -25,6 +27,7 @@ t('once',function*(){
   d[destroy]();
   d.click();
   assert.strictEqual(n,2);
+  d.remove();
 
   d = x([
     once('click',() => ['div','foo','bar']),
