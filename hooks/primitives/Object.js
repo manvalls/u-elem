@@ -7,6 +7,7 @@ var define = require('u-proto/define'),
     Resolver = require('y-resolver'),
     Yielded = Resolver.Yielded,
 
+    x = require('../../main.js'),
     hook = require('../../hook.js');
 
 Object.prototype[define](hook,function(parent){
@@ -35,8 +36,10 @@ function hookFn(that,parent,sibling){
     d = new Detacher();
     ctrl = new that.controller(that,d);
 
+    x.lock.capture();
     elem = that.view[hook](null,[ctrl,that],that);
     elem[detacher].add(d);
+    x.lock.give();
 
     if(!parent) parent = elem;
     else if(sibling) parent.insertBefore(elem,sibling);
@@ -80,8 +83,10 @@ function ydListener(parent,ref){
   var elem;
 
   if(this.value && this.value[hook]){
+    x.lock.capture();
     elem = this.value[hook]();
     parent.insertBefore(elem,ref);
+    x.lock.give();
   }
 
 }

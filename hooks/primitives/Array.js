@@ -1,8 +1,9 @@
 var define = require('u-proto/define'),
-    hook = require('../../hook.js');
+    hook = require('../../hook.js'),
+    x = require('../../main.js');
 
 Array.prototype[define](hook,function h(parent){
-  var i,ret,e;
+  var i,ret;
 
   for(i = 0;i < this.length;i++){
     if(ret) break;
@@ -11,13 +12,20 @@ Array.prototype[define](hook,function h(parent){
 
   if(!ret) ret = document.createElement('div');
   if(parent) parent.appendChild(ret);
-
-  for(;i < this.length;i++){
-    if(this[i] == null) e = '';
-    else e = this[i];
-
-    if(e[hook]) e[hook](ret);
-  }
+  x.lock.take().listen(hookRest,[this,i,ret]);
 
   return ret;
 });
+
+function hookRest(arr,i,parent){
+  var e;
+
+  for(;i < arr.length;i++){
+    if(arr[i] == null) e = '';
+    else e = arr[i];
+
+    if(e[hook]) e[hook](parent);
+  }
+
+  x.lock.give();
+}

@@ -2,6 +2,7 @@
 var Getter = require('y-setter').Getter,
     getGetter = require('./utils/getGetter.js'),
     hook = require('../hook.js'),
+    x = require('../main.js'),
     destroy = require('../destroy.js'),
     detacher = require('../detacher.js'),
     chain = Symbol(),

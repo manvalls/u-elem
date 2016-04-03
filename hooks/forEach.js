@@ -3,6 +3,7 @@ var Detacher = require('detacher'),
     getGetter = require('./utils/getGetter.js'),
     detacher = require('../detacher.js'),
     hook = require('../hook.js'),
+    x = require('../main.js'),
     getter = Symbol(),
     func = Symbol(),
     options = Symbol(),
@@ -41,6 +42,8 @@ function watcher(v,ov,d,parent,ref,func,opt,map,dm,ctx){
 
   v = v || [];
   i = 0;
+
+  x.lock.capture();
 
   for(obj of v){
 
@@ -119,6 +122,9 @@ function watcher(v,ov,d,parent,ref,func,opt,map,dm,ctx){
 
   ctx.elems = elems;
   d.detach();
+
+  x.lock.give();
+  
 }
 
 function remove(parent,child,obj,dm){
