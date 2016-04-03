@@ -104,8 +104,10 @@ function watchFn(obj,oldObj,d,parent,ref){
       clearTimeout(obj.timer);
     }
 
+    x.lock.capture();
     obj.domElement = obj.element[hook](null,[obj.getter]);
     parent.insertBefore(obj.domElement,ref);
+    x.lock.give();
   }
 
 }
