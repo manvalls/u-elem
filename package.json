@@ -1,6 +1,6 @@
 {
   "name": "u-elem",
-  "version": "9.4.7",
+  "version": "9.4.8",
   "description": "Configure your own JsonML dialect",
   "main": "main.js",
   "dependencies": {
