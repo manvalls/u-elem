@@ -63,7 +63,7 @@ function hookFn(that,parent,sibling){
 
   if(Getter.is(that)){
     txt = document.createTextNode('');
-    txt[detacher].add(that.pl('').connect(txt,'textContent'));
+    txt[detacher].add(that.connect(txt,'textContent'));
     parent.appendChild(txt);
     return parent;
   }

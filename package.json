@@ -7,7 +7,7 @@
     "detacher": "^2.0.3",
     "u-proto": "^6.4.2",
     "y-resolver": "^9.2.1",
-    "y-setter": "^6.4.3",
+    "y-setter": "^6.4.4",
     "y-walk": "^10.0.3"
   },
   "devDependencies": {
