@@ -5,10 +5,10 @@
   "main": "main.js",
   "dependencies": {
     "detacher": "^2.0.3",
-    "u-proto": "^6.4.2",
+    "u-proto": "^6.4.3",
     "y-resolver": "^9.2.1",
     "y-setter": "^6.4.4",
-    "y-walk": "^10.0.3"
+    "y-walk": "^10.0.4"
   },
   "devDependencies": {
     "u-test": "^3.7.2",
