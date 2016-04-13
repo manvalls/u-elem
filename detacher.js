@@ -3,7 +3,7 @@ var Detacher = require('detacher'),
     detacher = 'q8fbo31unDH6bL9',
     innerCol = 'fEOxfrCMFoiZZJb';
 
-Node.prototype[define]({
+if(global.Node && global.Node.prototype) global.Node.prototype[define]({
 
   get [detacher](){
     if(this[innerCol]) return this[innerCol];
