@@ -13,7 +13,8 @@ t('once',function*(){
       n = 0,
       d = x([
         once('window.click',() => void n++),
-        once('click',() => void n++)
+        once('click',() => void n++),
+        once(destroy,{foo: 'bar'})
       ]);
 
   x('body',d);
@@ -22,9 +23,11 @@ t('once',function*(){
   d.click();
   d.click();
   assert.strictEqual(n,2);
+  assert.notStrictEqual(d.foo,'bar');
   assert.strictEqual(d.tagName,'DIV');
 
   d[destroy]();
+  assert.strictEqual(d.foo,'bar');
   d.click();
   assert.strictEqual(n,2);
   d.remove();

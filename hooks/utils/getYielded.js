@@ -2,9 +2,11 @@ var Setter = require('y-setter'),
     Getter = Setter.Getter,
     Resolver = require('y-resolver'),
     Yielded = Resolver.Yielded,
-    detacher = require('../../detacher.js');
+    detacher = require('../../detacher.js'),
+    destroy = require('../../destroy.js');
 
 function getYielded(obj,parent){
+  if(obj == destroy) obj = parent[detacher];
   if(!obj) return Resolver.reject(obj,true);
   if(typeof obj == 'string') return fromString(obj,parent);
   if(Yielded.is(obj) || obj[Yielded.getter]) return Yielded.get(obj);

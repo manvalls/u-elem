@@ -13,18 +13,21 @@ t('on',function*(){
       n = 0,
       d = x([
         on('window.click',() => void n++),
-        on('click',() => void n++)
+        on('click',() => void n++),
+        on(destroy,{foo: 'bar'})
       ]);
 
   x('body',d);
 
   d.click();
   assert.strictEqual(n,2);
+  assert.notStrictEqual(d.foo,'bar');
   assert.strictEqual(d.tagName,'DIV');
 
   d[destroy]();
   d.click();
   assert.strictEqual(n,2);
+  assert.strictEqual(d.foo,'bar');
   d.remove();
 
   d = x([
