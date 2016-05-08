@@ -37,7 +37,7 @@ t('when',function(){
         g2 = s2.getter,
         d = x(
           when(g1,['span',
-            'Hi!'
+            'Hi!',g1
           ]),
           when(g2,['span',
             'Ho!'
@@ -46,9 +46,10 @@ t('when',function(){
 
     assert.strictEqual(d.innerHTML,'');
     s1.value = !s1.value;
-    assert.strictEqual(d.innerHTML,'<span>Hi!</span>');
+    assert.strictEqual(d.innerHTML,'<span>Hi!true</span>');
     s2.value = !s2.value;
-    assert.strictEqual(d.innerHTML,'<span>Hi!</span><span>Ho!</span>');
+    s1.value = 'foo';
+    assert.strictEqual(d.innerHTML,'<span>Hi!foo</span><span>Ho!</span>');
     s1.value = !s1.value;
     assert.strictEqual(d.innerHTML,'<span>Ho!</span>');
     s1.value = 0;

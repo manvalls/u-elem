@@ -1,5 +1,6 @@
 /**/ 'use strict' /**/
-var Getter = require('y-setter').Getter,
+var Setter = require('y-setter'),
+    Getter = Setter.Getter,
     getGetter = require('./utils/getGetter.js'),
     hook = require('../hook.js'),
     x = require('../main.js'),
@@ -79,22 +80,31 @@ function when(){
 
 function transform(){
   var i,v;
-  for(i = 0;i < arguments.length;i++) if(arguments[i] || this.chain[i].getter[done])
+
+  for(i = 0;i < arguments.length;i++) if(arguments[i] || this.chain[i].getter[done]){
+    if(this.chain[i].setter) this.chain[i].setter.value = arguments[i];
     return this.chain[i];
+  }
+
 }
 
 function watchFn(obj,oldObj,d,parent,ref){
-  var domElement;
+  var domElement,setter;
 
   if(oldObj && oldObj.domElement){
+
     domElement = oldObj.domElement;
+    setter = oldObj.setter;
     delete oldObj.domElement;
+    delete oldObj.setter;
+    setter.freeze();
     domElement[destroy]();
 
     if(oldObj.options.removalTimeout != null){
       oldObj.domElement = domElement;
       oldObj.timer = setTimeout(remove,oldObj.options.removalTimeout,parent,oldObj,domElement);
     }else parent.removeChild(domElement);
+
   }
 
   if(obj && obj.element){
@@ -105,7 +115,8 @@ function watchFn(obj,oldObj,d,parent,ref){
     }
 
     x.lock.capture();
-    obj.domElement = obj.element[hook](null,[obj.getter]);
+    obj.setter = new Setter(obj.getter.value);
+    obj.domElement = obj.element[hook](null,[obj.setter.getter]);
     parent.insertBefore(obj.domElement,ref);
     x.lock.give();
   }
