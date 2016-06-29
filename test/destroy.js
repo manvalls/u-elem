@@ -6,7 +6,7 @@ var t = require('u-test'),
     destroy = require('../destroy.js');
 
 t('destroy',function*(){
-  var setter = new Setter(),
+  var setter = new Setter.Hybrid(),
       d,i;
 
   setter.value = true;
