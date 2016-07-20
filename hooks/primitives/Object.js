@@ -37,7 +37,7 @@ function hookFn(that,parent,sibling){
     ctrl = new that.controller(that,d);
 
     x.lock.capture();
-    elem = that.view[hook](null,[ctrl,that],that);
+    elem = that.view[hook](null,[ctrl,that,that,that],that);
     elem[detacher].add(d);
     x.lock.give();
 
