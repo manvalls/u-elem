@@ -17,6 +17,8 @@ Object.prototype[define](hook,function(parent){
 function hookFn(that,parent,sibling){
   var txt,elem,ctrl,d,ref;
 
+  if(typeof that.then == 'function') that = Yielded.get(that);
+
   if(Yielded.is(that)){
 
     if(that.done){

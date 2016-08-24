@@ -25,4 +25,10 @@ t('Function hook',function*(){
   assert.strictEqual(d.tagName,'DIV');
   yield wait(100);
   assert.strictEqual(d.innerHTML,'');
+
+  d = x(Promise.resolve(['span','hi']));
+
+  assert.strictEqual(d.innerHTML,'');
+  yield wait(10);
+  assert.strictEqual(d.innerHTML,'<span>hi</span>');
 });
